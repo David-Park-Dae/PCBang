@@ -23,8 +23,8 @@ public class SetFrameDisplay {
 	 * screenHeight : (전체 해상도 Height - 지정한 Frame Height)/2 => int만 가능 
 	 */
 	public static void setFrameCenter(JFrame frame) {
-		int screenWidth = DISPLAYWIDTH-frame.getWidth()/2;
-		int screenHeight = DISPLAYHEIGHT-frame.getHeight()/2;	
+		int screenWidth = (DISPLAYWIDTH-frame.getWidth())/2;
+		int screenHeight = (DISPLAYHEIGHT-frame.getHeight())/2;	
 		frame.setLocation(screenWidth, screenHeight);
 	}
 	
