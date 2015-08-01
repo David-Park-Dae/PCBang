@@ -1,4 +1,4 @@
-package Home;
+package server;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,20 +26,20 @@ import javax.swing.JScrollPane;
 
 public class FrameServer extends JFrame
 {
-	Dimension d1;// ¸ğ´ÏÅÍÀÇ Å©±â¸¦ ±¸ÇÏ±â À§ÇÑ ÀÎ½ºÅÏ½º
-	JOptionPane jop; // ¾Ë¸²Ç¥½Ã¸¦ À§ÇÑ jop
+	Dimension d1;// ëª¨ë‹ˆí„°ì˜ í¬ê¸°ë¥¼ êµ¬í•˜ê¸° ìœ„í•œ ì¸ìŠ¤í„´ìŠ¤
+	JOptionPane jop; // ì•Œë¦¼í‘œì‹œë¥¼ ìœ„í•œ jop
 
-	JPanel plBackground; // ÇÁ·¹ÀÓ À§¿¡ ¹Ù·Î ±ò ÆÇ³Ú
-	JScrollPane mainScrollPane; // ¸ŞÀÎ ½ºÅ©¸°À» ³ÖÀ» ½ºÅ©·Ñ ÆÇ
-	JPanel mainScreen; // ¸Å´º¹Ù ¾Æ·¡ ½ºÅ©¸°, ½ºÅ©·Ñ ÆÇ¿¡ µé¾î°£´Ù.
-	JMenuBar bar; // ¸Å´º¹Ù
-	JMenu menuBasic; // ±âº»¼³Á¤¸Å´º
-	JMenu menuMember; // È¸¿ø°ü¸®¸Å´º
-	JMenu menuFood; // À½½Ä°ü¸®¸Å´º
-	JMenuItem itemBasicMoney; // ±âº»¼³Á¤ ¾ÆÀÌÅÛ ¿ä±İÁ¦°ü¸®
-	JMenuItem itemBasicExit; // ±âº»¼³Á¤ ¾ÆÀÌÅÛ Á¾·á
+	JPanel plBackground; // í”„ë ˆì„ ìœ„ì— ë°”ë¡œ ê¹” íŒë„¬
+	JScrollPane mainScrollPane; // ë©”ì¸ ìŠ¤í¬ë¦°ì„ ë„£ì„ ìŠ¤í¬ë¡¤ íŒ
+	JPanel mainScreen; // ë§¤ë‰´ë°” ì•„ë˜ ìŠ¤í¬ë¦°, ìŠ¤í¬ë¡¤ íŒì— ë“¤ì–´ê°„ë‹¤.
+	JMenuBar bar; // ë§¤ë‰´ë°”
+	JMenu menuBasic; // ê¸°ë³¸ì„¤ì •ë§¤ë‰´
+	JMenu menuMember; // íšŒì›ê´€ë¦¬ë§¤ë‰´
+	JMenu menuFood; // ìŒì‹ê´€ë¦¬ë§¤ë‰´
+	JMenuItem itemBasicMoney; // ê¸°ë³¸ì„¤ì • ì•„ì´í…œ ìš”ê¸ˆì œê´€ë¦¬
+	JMenuItem itemBasicExit; // ê¸°ë³¸ì„¤ì • ì•„ì´í…œ ì¢…ë£Œ
 
-	// mainscreen gridLayout¿¡ µé¾î°¥ ¶óÀÎµé
+	// mainscreen gridLayoutì— ë“¤ì–´ê°ˆ ë¼ì¸ë“¤
 	JPanel[] lines;
 	JPanel plLine1;
 	JPanel plLine2;
@@ -47,7 +47,7 @@ public class FrameServer extends JFrame
 	JPanel plLine4;
 	JPanel plLine5;
 
-	// ÄÄÇ»ÅÍ ¾ÆÀÌÄÜ ÀÌ¹ÌÁö¿Í ¹è¿­
+	// ì»´í“¨í„° ì•„ì´ì½˜ ì´ë¯¸ì§€ì™€ ë°°ì—´
 	ImageIcon[] imgLaptopR;
 	ImageIcon imgLaptop01r;
 	ImageIcon imgLaptop02r;
@@ -102,9 +102,9 @@ public class FrameServer extends JFrame
 	ImageIcon imgLaptop24s;
 	ImageIcon imgLaptop25s;
 
-	ImageIcon imgBlank; //º¹µµ¸¦ Ç¥ÇöÇÒ ±×³É ÇÏ¾á ºó ÀÌ¹ÌÁö
+	ImageIcon imgBlank; //ë³µë„ë¥¼ í‘œí˜„í•  ê·¸ëƒ¥ í•˜ì–€ ë¹ˆ ì´ë¯¸ì§€
 	
-	// ÄÄÇ»ÅÍ ¶óº§°ú ¹è¿­
+	// ì»´í“¨í„° ë¼ë²¨ê³¼ ë°°ì—´
 	JLabel lbBlank1;
 	JLabel lbBlank2;
 	JLabel lbBlank3;
@@ -138,7 +138,7 @@ public class FrameServer extends JFrame
 	JLabel lbLaptop24;
 	JLabel lbLaptop25;
 
-	// ¿ìÅ¬¸¯½Ã ÆË¾÷ ÀÌ¹ÌÁö
+	// ìš°í´ë¦­ì‹œ íŒì—… ì´ë¯¸ì§€
 	JPopupMenu jpm;
 	JMenuItem popItemName;
 	JMenuItem popItemStart;
@@ -146,26 +146,26 @@ public class FrameServer extends JFrame
 	JMenuItem popItemCharge;
 	JMenuItem popItemChat;
 
-	// PcÁöÁ¤½Ã ÆË¾÷¸Å´º ¾×¼Ç ¸®½º³Ê¿¡°Ô ¹øÈ£¸¦ Àü´ŞÇÒ ³ğ
+	// Pcì§€ì •ì‹œ íŒì—…ë§¤ë‰´ ì•¡ì…˜ ë¦¬ìŠ¤ë„ˆì—ê²Œ ë²ˆí˜¸ë¥¼ ì „ë‹¬í•  ë†ˆ
 	int currentPcNumber = -1;
 	
-	int pcTotal = 25; //ÄÄÇ»ÅÍÀÇ ÃÑ °¹¼ö
-	int pcAvailable = 0; //ÇöÀç »ç¿ë°¡´ÉÇÑ PC°¹¼ö
+	int pcTotal = 25; //ì»´í“¨í„°ì˜ ì´ ê°¯ìˆ˜
+	int pcAvailable = 0; //í˜„ì¬ ì‚¬ìš©ê°€ëŠ¥í•œ PCê°¯ìˆ˜
 
 	public FrameServer()
 	{
-		setTitle("°ü¸®ÀÚ ÇÁ·Î±×·¥");
+		setTitle("ê´€ë¦¬ì í”„ë¡œê·¸ë¨");
 		Toolkit tool = Toolkit.getDefaultToolkit();
-		d1 = tool.getScreenSize();// ¸ğ´ÏÅÍ »çÀÌÁî ÃøÁ¤
-		// width´Â È­¸é Å©±â·Î, height´Â ÀÛ¾÷Ç¥½ÃÁÙÀ» °í·ÁÇØ 50À» Àß¶úÀ½
+		d1 = tool.getScreenSize();// ëª¨ë‹ˆí„° ì‚¬ì´ì¦ˆ ì¸¡ì •
+		// widthëŠ” í™”ë©´ í¬ê¸°ë¡œ, heightëŠ” ì‘ì—…í‘œì‹œì¤„ì„ ê³ ë ¤í•´ 50ì„ ì˜ëìŒ
 		setBounds(0, 0, (int) d1.getWidth(), (int) d1.getHeight() - 50);
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);// x´­·¯µµ Á¾·á½ÃÅ°Áö ¸»ÀÚ.
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);// xëˆŒëŸ¬ë„ ì¢…ë£Œì‹œí‚¤ì§€ ë§ì.
 		addWindowListener(new WindowAdapter()
 		{
 			@Override
 			public void windowClosing(WindowEvent e)
 			{
-				int result = jop.showConfirmDialog(null, "Á¾·áÇÏ½Ã°Ú½À´Ï±î?", "¾Ë¸²",
+				int result = jop.showConfirmDialog(null, "ì¢…ë£Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "ì•Œë¦¼",
 						JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION)
 				{
@@ -174,11 +174,11 @@ public class FrameServer extends JFrame
 			}
 		});
 
-		// ÇÚµé·¯µé »ı¼º
+		// í•¸ë“¤ëŸ¬ë“¤ ìƒì„±
 		MouseHandler mouseHandler = new MouseHandler();
 		ActionHandler actionHandler = new ActionHandler();
 
-		// ÃÊ±âÈ­
+		// ì´ˆê¸°í™”
 		jop = new JOptionPane();
 		lines = new JPanel[5];
 		plLine1 = new JPanel();
@@ -198,24 +198,24 @@ public class FrameServer extends JFrame
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-		// »ó´Ü¸Å´º¹Ù
+		// ìƒë‹¨ë§¤ë‰´ë°”
 		bar = new JMenuBar();
-		menuBasic = new JMenu("±âº»¼³Á¤");
-		menuMember = new JMenu("È¸¿ø°ü¸®");
-		menuFood = new JMenu("À½½Ä°ü¸®");
-		itemBasicMoney = new JMenuItem("¿ä±İÁ¦°ü¸®");
-		itemBasicExit = new JMenuItem("ÇÁ·Î±×·¥ Á¾·á");
+		menuBasic = new JMenu("ê¸°ë³¸ì„¤ì •");
+		menuMember = new JMenu("íšŒì›ê´€ë¦¬");
+		menuFood = new JMenu("ìŒì‹ê´€ë¦¬");
+		itemBasicMoney = new JMenuItem("ìš”ê¸ˆì œê´€ë¦¬");
+		itemBasicExit = new JMenuItem("í”„ë¡œê·¸ë¨ ì¢…ë£Œ");
 
 		itemBasicExit.addActionListener(actionHandler);
 
-		// addºÎºĞ
+		// addë¶€ë¶„
 		// plBackground add
 		add(plBackground);
 		plBackground.setLayout(new BorderLayout());
 		plBackground.add(bar, "North");
 		plBackground.add(mainScrollPane, "Center");
 
-		// ¸Å´º¹Ù add
+		// ë§¤ë‰´ë°” add
 		bar.add(menuBasic);
 		bar.add(menuMember);
 		bar.add(menuFood);
@@ -227,10 +227,10 @@ public class FrameServer extends JFrame
 		menuFood.addMouseListener(mouseHandler);
 		menuMember.addMouseListener(mouseHandler);
 
-		// ÀÌ ¹ØÀº ¸ğµÎ ¸ŞÀÎ½ºÅ©¸° °ü·Ã
+		// ì´ ë°‘ì€ ëª¨ë‘ ë©”ì¸ìŠ¤í¬ë¦° ê´€ë ¨
 		mainScreen.setLayout(new GridLayout(5, 1));
 
-		// ¸ŞÀÎ½ºÅ©¸° ±×¸®µå ·¹ÀÌ¾Æ¿ô Çà ÇÑÁÙ´ç µé¾î°¥ ÆĞ³Îµé
+		// ë©”ì¸ìŠ¤í¬ë¦° ê·¸ë¦¬ë“œ ë ˆì´ì•„ì›ƒ í–‰ í•œì¤„ë‹¹ ë“¤ì–´ê°ˆ íŒ¨ë„ë“¤
 		for (JPanel j : lines)
 		{
 			j.setBackground(Color.WHITE);
@@ -243,7 +243,7 @@ public class FrameServer extends JFrame
 		mainScreen.add(plLine4);
 		mainScreen.add(plLine5);
 
-		// PC¶óº§°ú ¾ÆÀÌÄÜ³ğµé ÃÊ±âÈ­ÇÏ°í ¹è¿­¿¡ ³Ö±â
+		// PCë¼ë²¨ê³¼ ì•„ì´ì½˜ë†ˆë“¤ ì´ˆê¸°í™”í•˜ê³  ë°°ì—´ì— ë„£ê¸°
 		imgBlank = new ImageIcon("src/images/laptops/blank.jpg");
 		
 		imgLaptopR = new ImageIcon[pcTotal];
@@ -408,13 +408,13 @@ public class FrameServer extends JFrame
 		lbLaptop[23] = lbLaptop24;
 		lbLaptop[24] = lbLaptop25;
 
-		// ÆË¾÷¸Å´º
+		// íŒì—…ë§¤ë‰´
 		jpm = new JPopupMenu();
-		popItemStart = new JMenuItem("½ÃÀÛÇÏ±â");
-		popItemPay = new JMenuItem("Á¾·áÇÏ±â");
-		popItemCharge = new JMenuItem("ÃæÀüÇÏ±â");
-		popItemChat = new JMenuItem("Ã¤ÆÃÇÏ±â");
-		popItemName = new JMenuItem("¾ßÀÓ¸¶");
+		popItemStart = new JMenuItem("ì‹œì‘í•˜ê¸°");
+		popItemPay = new JMenuItem("ì¢…ë£Œí•˜ê¸°");
+		popItemCharge = new JMenuItem("ì¶©ì „í•˜ê¸°");
+		popItemChat = new JMenuItem("ì±„íŒ…í•˜ê¸°");
+		popItemName = new JMenuItem("ì•¼ì„ë§ˆ");
 		jpm.add(popItemName);
 		jpm.addSeparator();
 		jpm.add(popItemStart);
@@ -425,8 +425,8 @@ public class FrameServer extends JFrame
 		popItemPay.addActionListener(actionHandler);
 		popItemStart.addActionListener(actionHandler);
 
-		// ¶óº§ ¹è¿­À» ÀÌ¿ëÇÏ¿© ÀÌ¹ÌÁö ¾ÆÀÌÄÜ »ğÀÔ + ¹è°æ»öÁöÁ¤ + ¸¶¿ì½º ¸®½º³Ê Ãß°¡
-		// Line1¿¡ Ãß°¡
+		// ë¼ë²¨ ë°°ì—´ì„ ì´ìš©í•˜ì—¬ ì´ë¯¸ì§€ ì•„ì´ì½˜ ì‚½ì… + ë°°ê²½ìƒ‰ì§€ì • + ë§ˆìš°ìŠ¤ ë¦¬ìŠ¤ë„ˆ ì¶”ê°€
+		// Line1ì— ì¶”ê°€
 		for (int i=0 ; i < 5; i++)
 		{
 			if(i==3)
@@ -444,7 +444,7 @@ public class FrameServer extends JFrame
 		{
 			if(i==8)
 			{
-				System.out.println("8¹øÀÏ¶§");
+				System.out.println("8ë²ˆì¼ë•Œ");
 				lbBlank2.setIcon(imgBlank);
 				plLine2.add(lbBlank2);
 			}
@@ -505,26 +505,26 @@ public class FrameServer extends JFrame
 		public void mouseClicked(MouseEvent e)
 		{
 			// TODO Auto-generated method stub
-			if (e.isMetaDown()) // ¸¶¿ì½º¸¦ ¿ìÅ¬¸¯ÇÏ¸é
+			if (e.isMetaDown()) // ë§ˆìš°ìŠ¤ë¥¼ ìš°í´ë¦­í•˜ë©´
 			{
 				Object obj = e.getSource();
-				for (int i = 0; i < 25; i++) // ÄÄÇ»ÅÍ ¶óº§ °¹¼ö¸¸Å­ µ¹¸± ¿¹Á¤
+				for (int i = 0; i < 25; i++) // ì»´í“¨í„° ë¼ë²¨ ê°¯ìˆ˜ë§Œí¼ ëŒë¦´ ì˜ˆì •
 				{
-					if (obj.equals(lbLaptop[i])) // ¸¸¾à ÀÏÄ¡ÇÏ´Â ¶óº§ÀÌ ÀÖÀ» °æ¿ì
+					if (obj.equals(lbLaptop[i])) // ë§Œì•½ ì¼ì¹˜í•˜ëŠ” ë¼ë²¨ì´ ìˆì„ ê²½ìš°
 					{
-						popItemName.setText((i + 1) + "¹ø PC"); // ÆË¾÷¸Å´º¿¡ pcÀÌ¸§ Ç¥±â
-						jpm.setLocation(e.getXOnScreen(), e.getYOnScreen()); // ½ºÅ©¸°À»
-																				// ±âÁØÀ¸·Î
-																				// x¿Í
-																				// yÀÇ
-																				// ÁÂÇ¥
-																				// °¡Á®¿Í
-																				// ÆË¾÷¸Å´º
-																				// À§Ä¡ÁöÁ¤
-						jpm.setVisible(true); // ÆË¾÷¸Å´º ³ª¿Í¶û
-						currentPcNumber = i; // ÇöÀç PC¹øÈ£¸¦ ÀúÀå
+						popItemName.setText((i + 1) + "ë²ˆ PC"); // íŒì—…ë§¤ë‰´ì— pcì´ë¦„ í‘œê¸°
+						jpm.setLocation(e.getXOnScreen(), e.getYOnScreen()); // ìŠ¤í¬ë¦°ì„
+																				// ê¸°ì¤€ìœ¼ë¡œ
+																				// xì™€
+																				// yì˜
+																				// ì¢Œí‘œ
+																				// ê°€ì ¸ì™€
+																				// íŒì—…ë§¤ë‰´
+																				// ìœ„ì¹˜ì§€ì •
+						jpm.setVisible(true); // íŒì—…ë§¤ë‰´ ë‚˜ì™€ë‘
+						currentPcNumber = i; // í˜„ì¬ PCë²ˆí˜¸ë¥¼ ì €ì¥
 						System.out.println("laptop : " + currentPcNumber);
-						break;// ´õ µ¹¸± ÇÊ¿ä ¾øÀ¸´Ï break;
+						break;// ë” ëŒë¦´ í•„ìš” ì—†ìœ¼ë‹ˆ break;
 					}
 				}
 			} else
@@ -570,46 +570,46 @@ public class FrameServer extends JFrame
 		{
 			Object obj = e.getSource();
 
-			// ÆË¾÷¿¡ PC½ÃÀÛÀ» ´©¸£¸é
+			// íŒì—…ì— PCì‹œì‘ì„ ëˆ„ë¥´ë©´
 			if (obj.equals(popItemStart))
 			{
-				// ¼±ÅÃÇÑ pc¹øÈ£·Î ¶óº§ÀÇ ¾ÆÀÌÄÜÀ» °¡Á®¿Í ¾ÆÀÌÄÜ ¹è¿­°ú ºñ±³, ÄÑÁ®ÀÖ´ÂÁö ²¨Á®ÀÖ´ÂÁö ÆÇ´Ü
-				// (ex) 1¹ø ÇÇ¾¾ lbLaptop[0] 1¹ø ½ÇÇàÁßÀÎ ¾ÆÀÌÄÜ ¹è¿­ imgLaptopR[0] / 1¹ø ²¨Á®ÀÖ´Â
-				// ¾ÆÀÌÄÜ ¹è¿­ imgLaptopS[0]
+				// ì„ íƒí•œ pcë²ˆí˜¸ë¡œ ë¼ë²¨ì˜ ì•„ì´ì½˜ì„ ê°€ì ¸ì™€ ì•„ì´ì½˜ ë°°ì—´ê³¼ ë¹„êµ, ì¼œì ¸ìˆëŠ”ì§€ êº¼ì ¸ìˆëŠ”ì§€ íŒë‹¨
+				// (ex) 1ë²ˆ í”¼ì”¨ lbLaptop[0] 1ë²ˆ ì‹¤í–‰ì¤‘ì¸ ì•„ì´ì½˜ ë°°ì—´ imgLaptopR[0] / 1ë²ˆ êº¼ì ¸ìˆëŠ”
+				// ì•„ì´ì½˜ ë°°ì—´ imgLaptopS[0]
 				if (imgLaptopR[currentPcNumber]
 						.equals(lbLaptop[currentPcNumber].getIcon()))
 				{
-					System.out.println(currentPcNumber + "¹ø PC°¡ ÀÌ¹Ì ½ÇÇà ÁßÀÔ´Ï´Ù.");
+					System.out.println(currentPcNumber + "ë²ˆ PCê°€ ì´ë¯¸ ì‹¤í–‰ ì¤‘ì…ë‹ˆë‹¤.");
 					String message = (currentPcNumber + 1)
-							+ "¹ø PC°¡ ÀÌ¹Ì ½ÇÇà ÁßÀÔ´Ï´Ù.";
-					// ¾Ë¸² ´ÙÀÌ¾ó·Î±× Ãâ·Â
-					jop.showMessageDialog(null, message, "¾Ë¸²",
+							+ "ë²ˆ PCê°€ ì´ë¯¸ ì‹¤í–‰ ì¤‘ì…ë‹ˆë‹¤.";
+					// ì•Œë¦¼ ë‹¤ì´ì–¼ë¡œê·¸ ì¶œë ¥
+					jop.showMessageDialog(null, message, "ì•Œë¦¼",
 							JOptionPane.INFORMATION_MESSAGE);
-					jpm.setVisible(false); // ÆË¾÷¸Å´º ²¨Á®¶ó
+					jpm.setVisible(false); // íŒì—…ë§¤ë‰´ êº¼ì ¸ë¼
 					currentPcNumber = -1;
 				} else if (imgLaptopS[currentPcNumber]
 						.equals(lbLaptop[currentPcNumber].getIcon()))
 				{
-					System.out.println(currentPcNumber + 1 + "¹ø PC½ÃÀÛ");
-					// ½ÃÀÛ ¾ÆÀÌÄÜÀ¸·Î º¯°æ
+					System.out.println(currentPcNumber + 1 + "ë²ˆ PCì‹œì‘");
+					// ì‹œì‘ ì•„ì´ì½˜ìœ¼ë¡œ ë³€ê²½
 					lbLaptop[currentPcNumber]
 							.setIcon(imgLaptopR[currentPcNumber]);
-					jpm.setVisible(false); // ÆË¾÷¸Å´º ²¨Á´
+					jpm.setVisible(false); // íŒì—…ë§¤ë‰´ êº¼ì¡
 					currentPcNumber = -1;
 				}
 			}
 
-			// ÆË¾÷Á¤»ê¹öÆ°
+			// íŒì—…ì •ì‚°ë²„íŠ¼
 			if (obj.equals(popItemPay))
 			{
 				if (imgLaptopR[currentPcNumber]
 						.equals(lbLaptop[currentPcNumber].getIcon()))
 				{
-					int result = jop.showConfirmDialog(null, "Á¤»êÇÏ½Ã°Ú½À´Ï±î?", "¾Ë¸²",
+					int result = jop.showConfirmDialog(null, "ì •ì‚°í•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "ì•Œë¦¼",
 							JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.YES_OPTION)
 					{
-						System.out.println(currentPcNumber + 1 + "¹ø PCÁ¾·á");
+						System.out.println(currentPcNumber + 1 + "ë²ˆ PCì¢…ë£Œ");
 						lbLaptop[currentPcNumber]
 								.setIcon(imgLaptopS[currentPcNumber]);
 						jpm.setVisible(false);
@@ -619,20 +619,20 @@ public class FrameServer extends JFrame
 					currentPcNumber = -1;
 				} else
 				{
-					System.out.println(currentPcNumber + "¹ø PC´Â ½ÇÇà ÁßÀÌ ¾Æ´Õ´Ï´Ù.");
+					System.out.println(currentPcNumber + "ë²ˆ PCëŠ” ì‹¤í–‰ ì¤‘ì´ ì•„ë‹™ë‹ˆë‹¤.");
 					String message = (currentPcNumber + 1)
-							+ "¹ø PC´Â ½ÇÇà ÁßÀÌ ¾Æ´Õ´Ï´Ù.";
-					jop.showMessageDialog(null, message, "¾Ë¸²",
+							+ "ë²ˆ PCëŠ” ì‹¤í–‰ ì¤‘ì´ ì•„ë‹™ë‹ˆë‹¤.";
+					jop.showMessageDialog(null, message, "ì•Œë¦¼",
 							JOptionPane.INFORMATION_MESSAGE);
 					jpm.setVisible(false);
 					currentPcNumber = -1;
 				}
 			}
 
-			// ±âº» ¸Å´º Á¾·á ¹öÆ°
+			// ê¸°ë³¸ ë§¤ë‰´ ì¢…ë£Œ ë²„íŠ¼
 			if (obj.equals(itemBasicExit))
 			{
-				int result = jop.showConfirmDialog(null, "Á¾·áÇÏ½Ã°Ú½À´Ï±î?", "¾Ë¸²",
+				int result = jop.showConfirmDialog(null, "ì¢…ë£Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "ì•Œë¦¼",
 						JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION)
 				{

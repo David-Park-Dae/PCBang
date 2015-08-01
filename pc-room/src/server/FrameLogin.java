@@ -1,4 +1,4 @@
-package Home;
+package server;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -17,11 +17,11 @@ import javax.swing.JTextField;
 public class FrameLogin extends JFrame implements ActionListener
 {
 	Dimension d;
-	//background ÆĞ³Î ÇÏ³ª ¹Ú°í ±×À§¿¡ ¶óÀÎ 3°³ µÎ¸é¼­ ÆĞ³Î 3°³¸¦ ¹ÚÀ½
-	//line1 : ·Î°í
-	//line2 : ¾ÆÀÌµğ 
+	//background íŒ¨ë„ í•˜ë‚˜ ë°•ê³  ê·¸ìœ„ì— ë¼ì¸ 3ê°œ ë‘ë©´ì„œ íŒ¨ë„ 3ê°œë¥¼ ë°•ìŒ
+	//line1 : ë¡œê³ 
+	//line2 : ì•„ì´ë”” 
 	//line3 : pwd
-	//line4 : ¹öÆ°
+	//line4 : ë²„íŠ¼
 	JPanel plBackground;
 	JPanel plLine1;
 	JPanel plLine2;
@@ -39,7 +39,7 @@ public class FrameLogin extends JFrame implements ActionListener
 	
 	FrameLogin()
 	{
-		setTitle("°ü¸®ÀÚ ·Î±×ÀÎ");
+		setTitle("ê´€ë¦¬ì ë¡œê·¸ì¸");
 		
 		jop = new JOptionPane();
 		Toolkit tool = Toolkit.getDefaultToolkit();
@@ -49,7 +49,7 @@ public class FrameLogin extends JFrame implements ActionListener
 		setBounds((d.width/2)-(frameX/2), (d.height/2)-(frameY/2), frameX, frameY);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		//ÆĞ³Îµé ÃÊ±âÈ­
+		//íŒ¨ë„ë“¤ ì´ˆê¸°í™”
 		plBackground = new JPanel();
 		plBackground.setLayout(new GridLayout(4,1, 0, -5));
 		plLine1 = new JPanel();
@@ -61,19 +61,19 @@ public class FrameLogin extends JFrame implements ActionListener
 		plBackground.add(plLine3);
 		plBackground.add(plLine4);
 		
-		//¶óº§, ¹öÆ°, ÅØ½ºÆ® ÇÊµå ÃÊ±âÈ­
-		lbId = new JLabel("°ü¸®ÀÚ °èÁ¤ : ");
-		lbPwd = new JLabel("ºñ ¹Ğ ¹ø È£ : ");
+		//ë¼ë²¨, ë²„íŠ¼, í…ìŠ¤íŠ¸ í•„ë“œ ì´ˆê¸°í™”
+		lbId = new JLabel("ê´€ë¦¬ì ê³„ì • : ");
+		lbPwd = new JLabel("ë¹„ ë°€ ë²ˆ í˜¸ : ");
 		tfId = new JTextField(10);
 		pfPwd = new JPasswordField(10);
 		btnLogin = new JButton("Login");
 		btnExit = new JButton("Exit");
 		
-		//¾×¼Ç¸®½º³Ê Ãß°¡
+		//ì•¡ì…˜ë¦¬ìŠ¤ë„ˆ ì¶”ê°€
 		btnLogin.addActionListener(this);
 		btnExit.addActionListener(this);
 		
-		//¹öÆ°, ÅØ½ºÆ® ÇÊµå ³Ö±â
+		//ë²„íŠ¼, í…ìŠ¤íŠ¸ í•„ë“œ ë„£ê¸°
 		plLine2.add(lbId);
 		plLine2.add(tfId);
 		
@@ -104,7 +104,7 @@ public class FrameLogin extends JFrame implements ActionListener
 		}
 		if(obj.equals(btnExit))
 		{
-			int result = jop.showConfirmDialog(null, "Á¾·áÇÏ½Ã°Ú½À´Ï±î?", "¾Ë¸²", JOptionPane.YES_NO_OPTION);
+			int result = jop.showConfirmDialog(null, "ì¢…ë£Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "ì•Œë¦¼", JOptionPane.YES_NO_OPTION);
 			if(result == JOptionPane.YES_OPTION)
 			{
 				System.exit(0);
