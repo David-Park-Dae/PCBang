@@ -42,14 +42,14 @@ public class LoginFrame extends JFrame {
 		setSize(DISPLAYWIDTH, DISPLAYHEIGHT);
 		SetFrameDisplay.setFrameCenter(this);	// 화면 가운데 표시
 //		SetFrameDisplay.setFullMode(this);	// 전체화면 모드
-		initDefaultPanel();
+		initPanel();
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		inchent = this;
 		setVisible(true);
 	}
 	
-	void initDefaultPanel() {
+	void initPanel() {
 		panelDefault = new JPanel();
 		panelDefault.setSize(this.getWidth(),this.getHeight());
 		panelDefault.setLocation(0,0);
@@ -122,7 +122,9 @@ public class LoginFrame extends JFrame {
 				// data base 검사
 				boolean loginFlag = true;
 				if(loginFlag) {
-					
+					dispose();
+					// 로그인 후 프로그램 실행
+					// ArrayList에 회원정보를 담은 후 넘겨줌
 				}
 			}
 		});

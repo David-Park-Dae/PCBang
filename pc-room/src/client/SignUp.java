@@ -3,6 +3,9 @@ package client;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -36,6 +39,9 @@ public class SignUp extends JFrame{
 	JButton btnSignUp;
 	JButton btnSignUpCancel;
 	
+	boolean chkIdFlag = false;
+	boolean chkPasswdFlag = false;
+	
 	public SignUp(JFrame owner) {
 		this.setTitle("회원가입");
 		this.setLayout(null);
@@ -65,6 +71,18 @@ public class SignUp extends JFrame{
 		tfUsername = new JTextField();
 		tfUsername.setSize(150,30);
 		tfUsername.setLocation(XGAB*2+lbUsername.getWidth(), lbUsername.getY());
+		tfUsername.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String username = tfUsername.getText();
+				// DB에 가서 검사
+				if(chkIdFlag) {
+					tfUsername.setBackground(Color.red);
+				} else {
+					tfUsername.setBackground(Color.WHITE);
+				}
+			}
+		});
 		
 		lbPasswd = new JLabel("비밀번호");
 		lbPasswd.setSize(70,30);
@@ -81,6 +99,21 @@ public class SignUp extends JFrame{
 		tfChkPasswd = new JPasswordField();
 		tfChkPasswd.setSize(150,30);
 		tfChkPasswd.setLocation(XGAB*2+lbChkPasswd.getWidth(), lbChkPasswd.getY());
+		tfChkPasswd.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String strPasswd = new String(tfPasswd.getPassword());
+				String strChkPasswd = new String(tfChkPasswd.getPassword());
+				// 비밀번호가 같은지 같지 않는지 검사
+				if(!strPasswd.equals(strChkPasswd)) {
+					chkPasswdFlag = false;
+					tfChkPasswd.setBackground(Color.red);
+				} else {
+					chkPasswdFlag = true;
+					tfChkPasswd.setBackground(Color.WHITE);
+				}
+			}
+		});
 		
 		
 		btnSignUp = new JButton("확인");
@@ -90,15 +123,18 @@ public class SignUp extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 중복처리
-				
-				
-				// 회원가입 완료
-//				JOptionPane.showMessageDialog(panelMain, "회원가입이 완료되었습니다.");
-//				dispose();
-				
-				JOptionPane.showMessageDialog(panelMain, "회원가입이 아이디와 비밀번호를 확인해주세요.");
-				tfName.requestFocus();
+				if(!chkPasswdFlag) {	// 입력한 패스워드가 같지 않을 경우
+					JOptionPane.showMessageDialog(panelMain, "비밀번호를 확인해주세요.");
+					tfChkPasswd.requestFocus();
+				} else if (chkIdFlag) {
+					JOptionPane.showMessageDialog(panelMain, "아이디를 확인해주세요.");
+					tfUsername.requestFocus();
+				} else {
+					// DB처리
+					
+					JOptionPane.showMessageDialog(panelMain, "회원가입이 완료되었습니다.");
+					dispose();
+				}
 				
 			}
 		});
