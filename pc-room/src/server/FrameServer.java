@@ -641,9 +641,4 @@ public class FrameServer extends JFrame
 			}
 		}
 	}
-
-	public static void main(String[] args)
-	{
-		new FrameServer();
-	}
 }
