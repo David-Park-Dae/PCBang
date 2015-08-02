@@ -500,14 +500,8 @@ public class FrameServer extends JFrame {
 					if (obj.equals(lbLaptop[i])) // 만약 일치하는 라벨이 있을 경우
 					{
 						popItemName.setText((i + 1) + "번 PC"); // 팝업매뉴에 pc이름 표기
-						jpm.setLocation(e.getXOnScreen(), e.getYOnScreen()); // 스크린을
-																				// 기준으로
-																				// x와
-																				// y의
-																				// 좌표
-																				// 가져와
-																				// 팝업매뉴
-																				// 위치지정
+						//스크린을 기준으로 마우스 위치를 가져와 팝업매뉴를 위치시킴
+						jpm.setLocation(e.getXOnScreen(), e.getYOnScreen());
 						jpm.setVisible(true); // 팝업매뉴 나와랑
 						currentPcNumber = i; // 현재 PC번호를 저장
 						System.out.println("laptop : " + currentPcNumber);
@@ -559,8 +553,8 @@ public class FrameServer extends JFrame {
 					System.out.println(currentPcNumber + "번 PC가 이미 실행 중입니다.");
 					String message = (currentPcNumber + 1) + "번 PC가 이미 실행 중입니다.";
 					// 알림 다이얼로그 출력
-					jop.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
 					jpm.setVisible(false); // 팝업매뉴 꺼져라
+					jop.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
 					currentPcNumber = -1;
 				} else if (imgLaptopS[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
 					System.out.println(currentPcNumber + 1 + "번 PC시작");
@@ -576,22 +570,22 @@ public class FrameServer extends JFrame {
 			// 팝업정산버튼
 			if (obj.equals(popItemPay)) {
 				if (imgLaptopR[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
-					int result = jop.showConfirmDialog(null, "정산하시겠습니까?", "알림", JOptionPane.YES_NO_OPTION);
+					jpm.setVisible(false);
+					String dialogMessage = (currentPcNumber+1) + "번 PC를 정산하시겠습니까?";
+					int result = jop.showConfirmDialog(null, dialogMessage, "알림", JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.YES_OPTION) {
 						System.out.println(currentPcNumber + 1 + "번 PC종료");
-						jpm.setVisible(false);
 						lbLaptop[currentPcNumber].setIcon(imgLaptopS[currentPcNumber]);
 						pcMessage = "";
 						lbLaptop[currentPcNumber].setMessage(pcMessage);
 						currentPcNumber = -1;
 					}
-					jpm.setVisible(false);
 					currentPcNumber = -1;
 				} else {
+					jpm.setVisible(false);
 					System.out.println(currentPcNumber + "번 PC는 실행 중이 아닙니다.");
 					String message = (currentPcNumber + 1) + "번 PC는 실행 중이 아닙니다.";
 					jop.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
-					jpm.setVisible(false);
 					currentPcNumber = -1;
 				}
 			}

@@ -17,8 +17,6 @@ public class PLabel extends JLabel{
 		this.imgIcon = img;
 	}
 
-	
-
 	public String getMessage() {
 		return message;
 	}
