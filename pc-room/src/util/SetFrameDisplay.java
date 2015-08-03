@@ -10,8 +10,8 @@ public class SetFrameDisplay {
 	
 	public static Dimension RES = Toolkit.getDefaultToolkit().getScreenSize(); // res = 디스플레이의 width와 height를 구하기 위함
 	
-	public static int DISPLAYWIDTH = (int)RES.getWidth();
-	public static int DISPLAYHEIGHT = (int)RES.getHeight();
+	public static int DISPLAY_WIDTH = (int)RES.getWidth();
+	public static int DISPLAY_HEIGHT = (int)RES.getHeight();
 	
 	/*
 	 * setFrameCenter 설명
@@ -23,8 +23,8 @@ public class SetFrameDisplay {
 	 * screenHeight : (전체 해상도 Height - 지정한 Frame Height)/2 => int만 가능 
 	 */
 	public static void setFrameCenter(JFrame frame) {
-		int screenWidth = (DISPLAYWIDTH-frame.getWidth())/2;
-		int screenHeight = (DISPLAYHEIGHT-frame.getHeight())/2;	
+		int screenWidth = (DISPLAY_WIDTH-frame.getWidth())/2;
+		int screenHeight = (DISPLAY_HEIGHT-frame.getHeight())/2;	
 		frame.setLocation(screenWidth, screenHeight);
 	}
 	
