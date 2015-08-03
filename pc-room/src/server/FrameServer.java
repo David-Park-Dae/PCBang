@@ -24,8 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
-public class FrameServer extends JFrame
-{
+public class FrameServer extends JFrame {
+	String pcMessage; // pc에 표시하기위한 message
 	Dimension d1;// 모니터의 크기를 구하기 위한 인스턴스
 	JOptionPane jop; // 알림표시를 위한 jop
 
@@ -102,41 +102,41 @@ public class FrameServer extends JFrame
 	ImageIcon imgLaptop24s;
 	ImageIcon imgLaptop25s;
 
-	ImageIcon imgBlank; //복도를 표현할 그냥 하얀 빈 이미지
-	
+	ImageIcon imgBlank; // 복도를 표현할 그냥 하얀 빈 이미지
+
 	// 컴퓨터 라벨과 배열
 	JLabel lbBlank1;
 	JLabel lbBlank2;
 	JLabel lbBlank3;
 	JLabel lbBlank4;
 	JLabel lbBlank5;
-	
-	JLabel[] lbLaptop;
-	JLabel lbLaptop01;
-	JLabel lbLaptop02;
-	JLabel lbLaptop03;
-	JLabel lbLaptop04;
-	JLabel lbLaptop05;
-	JLabel lbLaptop06;
-	JLabel lbLaptop07;
-	JLabel lbLaptop08;
-	JLabel lbLaptop09;
-	JLabel lbLaptop10;
-	JLabel lbLaptop11;
-	JLabel lbLaptop12;
-	JLabel lbLaptop13;
-	JLabel lbLaptop14;
-	JLabel lbLaptop15;
-	JLabel lbLaptop16;
-	JLabel lbLaptop17;
-	JLabel lbLaptop18;
-	JLabel lbLaptop19;
-	JLabel lbLaptop20;
-	JLabel lbLaptop21;
-	JLabel lbLaptop22;
-	JLabel lbLaptop23;
-	JLabel lbLaptop24;
-	JLabel lbLaptop25;
+
+	PLabel[] lbLaptop;
+	PLabel lbLaptop01;
+	PLabel lbLaptop02;
+	PLabel lbLaptop03;
+	PLabel lbLaptop04;
+	PLabel lbLaptop05;
+	PLabel lbLaptop06;
+	PLabel lbLaptop07;
+	PLabel lbLaptop08;
+	PLabel lbLaptop09;
+	PLabel lbLaptop10;
+	PLabel lbLaptop11;
+	PLabel lbLaptop12;
+	PLabel lbLaptop13;
+	PLabel lbLaptop14;
+	PLabel lbLaptop15;
+	PLabel lbLaptop16;
+	PLabel lbLaptop17;
+	PLabel lbLaptop18;
+	PLabel lbLaptop19;
+	PLabel lbLaptop20;
+	PLabel lbLaptop21;
+	PLabel lbLaptop22;
+	PLabel lbLaptop23;
+	PLabel lbLaptop24;
+	PLabel lbLaptop25;
 
 	// 우클릭시 팝업 이미지
 	JPopupMenu jpm;
@@ -146,29 +146,25 @@ public class FrameServer extends JFrame
 	JMenuItem popItemCharge;
 	JMenuItem popItemChat;
 
+
 	// Pc지정시 팝업매뉴 액션 리스너에게 번호를 전달할 놈
 	int currentPcNumber = -1;
-	
-	int pcTotal = 25; //컴퓨터의 총 갯수
-	int pcAvailable = 0; //현재 사용가능한 PC갯수
 
-	public FrameServer()
-	{
+	int pcTotal = 25; // 컴퓨터의 총 갯수
+	int pcAvailable = 0; // 현재 사용가능한 PC갯수
+
+	public FrameServer() {
 		setTitle("관리자 프로그램");
 		Toolkit tool = Toolkit.getDefaultToolkit();
 		d1 = tool.getScreenSize();// 모니터 사이즈 측정
 		// width는 화면 크기로, height는 작업표시줄을 고려해 50을 잘랐음
 		setBounds(0, 0, (int) d1.getWidth(), (int) d1.getHeight() - 50);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);// x눌러도 종료시키지 말자.
-		addWindowListener(new WindowAdapter()
-		{
+		addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowClosing(WindowEvent e)
-			{
-				int result = jop.showConfirmDialog(null, "종료하시겠습니까?", "알림",
-						JOptionPane.YES_NO_OPTION);
-				if (result == JOptionPane.YES_OPTION)
-				{
+			public void windowClosing(WindowEvent e) {
+				int result = jop.showConfirmDialog(null, "종료하시겠습니까?", "알림", JOptionPane.YES_NO_OPTION);
+				if (result == JOptionPane.YES_OPTION) {
 					System.exit(0);
 				}
 			}
@@ -194,8 +190,7 @@ public class FrameServer extends JFrame
 
 		plBackground = new JPanel();
 		mainScreen = new JPanel();
-		mainScrollPane = new JScrollPane(mainScreen,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		mainScrollPane = new JScrollPane(mainScreen, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		// 상단매뉴바
@@ -231,8 +226,7 @@ public class FrameServer extends JFrame
 		mainScreen.setLayout(new GridLayout(5, 1));
 
 		// 메인스크린 그리드 레이아웃 행 한줄당 들어갈 패널들
-		for (JPanel j : lines)
-		{
+		for (JPanel j : lines) {
 			j.setBackground(Color.WHITE);
 			j.setLayout(new FlowLayout(FlowLayout.LEFT));
 			j.addMouseListener(mouseHandler);
@@ -245,7 +239,7 @@ public class FrameServer extends JFrame
 
 		// PC라벨과 아이콘놈들 초기화하고 배열에 넣기
 		imgBlank = new ImageIcon("src/images/laptops/blank.jpg");
-		
+
 		imgLaptopR = new ImageIcon[pcTotal];
 		imgLaptop01r = new ImageIcon("src/images/laptops/laptop01r.jpg");
 		imgLaptop02r = new ImageIcon("src/images/laptops/laptop02r.jpg");
@@ -349,39 +343,39 @@ public class FrameServer extends JFrame
 		imgLaptopS[22] = imgLaptop23s;
 		imgLaptopS[23] = imgLaptop24s;
 		imgLaptopS[24] = imgLaptop25s;
-		
+
 		lbBlank1 = new JLabel();
 		lbBlank2 = new JLabel();
 		lbBlank3 = new JLabel();
 		lbBlank4 = new JLabel();
 		lbBlank5 = new JLabel();
-		
-		lbLaptop = new JLabel[pcTotal];
-		lbLaptop01 = new JLabel();
-		lbLaptop02 = new JLabel();
-		lbLaptop03 = new JLabel();
-		lbLaptop04 = new JLabel();
-		lbLaptop05 = new JLabel();
-		lbLaptop06 = new JLabel();
-		lbLaptop07 = new JLabel();
-		lbLaptop08 = new JLabel();
-		lbLaptop09 = new JLabel();
-		lbLaptop10 = new JLabel();
-		lbLaptop11 = new JLabel();
-		lbLaptop12 = new JLabel();
-		lbLaptop13 = new JLabel();
-		lbLaptop14 = new JLabel();
-		lbLaptop15 = new JLabel();
-		lbLaptop16 = new JLabel();
-		lbLaptop17 = new JLabel();
-		lbLaptop18 = new JLabel();
-		lbLaptop19 = new JLabel();
-		lbLaptop20 = new JLabel();
-		lbLaptop21 = new JLabel();
-		lbLaptop22 = new JLabel();
-		lbLaptop23 = new JLabel();
-		lbLaptop24 = new JLabel();
-		lbLaptop25 = new JLabel();
+
+		lbLaptop = new PLabel[pcTotal];
+		lbLaptop01 = new PLabel();
+		lbLaptop02 = new PLabel();
+		lbLaptop03 = new PLabel();
+		lbLaptop04 = new PLabel();
+		lbLaptop05 = new PLabel();
+		lbLaptop06 = new PLabel();
+		lbLaptop07 = new PLabel();
+		lbLaptop08 = new PLabel();
+		lbLaptop09 = new PLabel();
+		lbLaptop10 = new PLabel();
+		lbLaptop11 = new PLabel();
+		lbLaptop12 = new PLabel();
+		lbLaptop13 = new PLabel();
+		lbLaptop14 = new PLabel();
+		lbLaptop15 = new PLabel();
+		lbLaptop16 = new PLabel();
+		lbLaptop17 = new PLabel();
+		lbLaptop18 = new PLabel();
+		lbLaptop19 = new PLabel();
+		lbLaptop20 = new PLabel();
+		lbLaptop21 = new PLabel();
+		lbLaptop22 = new PLabel();
+		lbLaptop23 = new PLabel();
+		lbLaptop24 = new PLabel();
+		lbLaptop25 = new PLabel();
 		lbLaptop[0] = lbLaptop01;
 		lbLaptop[1] = lbLaptop02;
 		lbLaptop[2] = lbLaptop03;
@@ -427,70 +421,65 @@ public class FrameServer extends JFrame
 
 		// 라벨 배열을 이용하여 이미지 아이콘 삽입 + 배경색지정 + 마우스 리스너 추가
 		// Line1에 추가
-		for (int i=0 ; i < 5; i++)
-		{
-			if(i==3)
-			{
+		for (int i = 0; i < 5; i++) {
+			if (i == 3) {
 				lbBlank1.setIcon(imgBlank);
 				plLine1.add(lbBlank1);
 			}
 			lbLaptop[i].setIcon(imgLaptopS[i]);
+			lbLaptop[i].setMessage("");
 			lbLaptop[i].setBackground(Color.WHITE);
 			lbLaptop[i].addMouseListener(mouseHandler);
 			plLine1.add(lbLaptop[i]);
 		}
-		//Line2
-		for (int i = 5; i < 10; i++)
-		{
-			if(i==8)
-			{
+		// Line2
+		for (int i = 5; i < 10; i++) {
+			if (i == 8) {
 				System.out.println("8번일때");
 				lbBlank2.setIcon(imgBlank);
 				plLine2.add(lbBlank2);
 			}
 			lbLaptop[i].setIcon(imgLaptopS[i]);
+			lbLaptop[i].setMessage("");
 			lbLaptop[i].setBackground(Color.WHITE);
 			lbLaptop[i].addMouseListener(mouseHandler);
 			plLine2.add(lbLaptop[i]);
 		}
-		
-		//Line3
-		for (int i = 10; i < 15; i++)
-		{
-			if(i==13)
-			{
+
+		// Line3
+		for (int i = 10; i < 15; i++) {
+			if (i == 13) {
 				lbBlank3.setIcon(imgBlank);
 				plLine3.add(lbBlank3);
 			}
 			lbLaptop[i].setIcon(imgLaptopS[i]);
+			lbLaptop[i].setMessage("");
 			lbLaptop[i].setBackground(Color.WHITE);
 			lbLaptop[i].addMouseListener(mouseHandler);
 			plLine3.add(lbLaptop[i]);
 		}
-		
-		//Line4
-		for (int i = 15; i < 20; i++)
-		{
-			if(i==18)
-			{
+
+		// Line4
+		for (int i = 15; i < 20; i++) {
+			if (i == 18) {
 				lbBlank4.setIcon(imgBlank);
 				plLine4.add(lbBlank4);
 			}
 			lbLaptop[i].setIcon(imgLaptopS[i]);
+			lbLaptop[i].setMessage("");
 			lbLaptop[i].setBackground(Color.WHITE);
 			lbLaptop[i].addMouseListener(mouseHandler);
 			plLine4.add(lbLaptop[i]);
 		}
-		
-		//Line5
-		for (int i = 20; i < 25; i++)
-		{
-			if(i==23)
-			{
+
+		// Line5
+		for (int i = 20; i < 25; i++) {
+			if (i == 23) {
 				lbBlank5.setIcon(imgBlank);
 				plLine5.add(lbBlank5);
 			}
 			lbLaptop[i].setIcon(imgLaptopS[i]);
+			lbLaptop[i].setMessage("");
 			lbLaptop[i].setBackground(Color.WHITE);
 			lbLaptop[i].addMouseListener(mouseHandler);
 			plLine5.add(lbLaptop[i]);
@@ -499,11 +488,9 @@ public class FrameServer extends JFrame
 		setVisible(true);
 	}
 
-	class MouseHandler implements MouseListener
-	{
+	class MouseHandler implements MouseListener {
 		@Override
-		public void mouseClicked(MouseEvent e)
-		{
+		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
 			if (e.isMetaDown()) // 마우스를 우클릭하면
 			{
@@ -513,132 +500,106 @@ public class FrameServer extends JFrame
 					if (obj.equals(lbLaptop[i])) // 만약 일치하는 라벨이 있을 경우
 					{
 						popItemName.setText((i + 1) + "번 PC"); // 팝업매뉴에 pc이름 표기
-						jpm.setLocation(e.getXOnScreen(), e.getYOnScreen()); // 스크린을
-																				// 기준으로
-																				// x와
-																				// y의
-																				// 좌표
-																				// 가져와
-																				// 팝업매뉴
-																				// 위치지정
+						//스크린을 기준으로 마우스 위치를 가져와 팝업매뉴를 위치시킴
+						jpm.setLocation(e.getXOnScreen(), e.getYOnScreen());
 						jpm.setVisible(true); // 팝업매뉴 나와랑
 						currentPcNumber = i; // 현재 PC번호를 저장
 						System.out.println("laptop : " + currentPcNumber);
 						break;// 더 돌릴 필요 없으니 break;
 					}
 				}
-			} else
-			{
+			} else {
 				jpm.setVisible(false);
 			}
 		}
 
 		@Override
-		public void mouseEntered(MouseEvent arg0)
-		{
+		public void mouseEntered(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void mouseExited(MouseEvent arg0)
-		{
+		public void mouseExited(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void mousePressed(MouseEvent arg0)
-		{
+		public void mousePressed(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void mouseReleased(MouseEvent e)
-		{
+		public void mouseReleased(MouseEvent e) {
 			// TODO Auto-generated method stub
 
 		}
 	}
 
-	class ActionHandler implements ActionListener
-	{
+	class ActionHandler implements ActionListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e)
-		{
+		public void actionPerformed(ActionEvent e) {
 			Object obj = e.getSource();
 
 			// 팝업에 PC시작을 누르면
-			if (obj.equals(popItemStart))
-			{
+			if (obj.equals(popItemStart)) {
 				// 선택한 pc번호로 라벨의 아이콘을 가져와 아이콘 배열과 비교, 켜져있는지 꺼져있는지 판단
 				// (ex) 1번 피씨 lbLaptop[0] 1번 실행중인 아이콘 배열 imgLaptopR[0] / 1번 꺼져있는
 				// 아이콘 배열 imgLaptopS[0]
-				if (imgLaptopR[currentPcNumber]
-						.equals(lbLaptop[currentPcNumber].getIcon()))
-				{
+				if (imgLaptopR[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
 					System.out.println(currentPcNumber + "번 PC가 이미 실행 중입니다.");
-					String message = (currentPcNumber + 1)
-							+ "번 PC가 이미 실행 중입니다.";
+					String message = (currentPcNumber + 1) + "번 PC가 이미 실행 중입니다.";
 					// 알림 다이얼로그 출력
-					jop.showMessageDialog(null, message, "알림",
-							JOptionPane.INFORMATION_MESSAGE);
 					jpm.setVisible(false); // 팝업매뉴 꺼져라
+					jop.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
 					currentPcNumber = -1;
-				} else if (imgLaptopS[currentPcNumber]
-						.equals(lbLaptop[currentPcNumber].getIcon()))
-				{
+				} else if (imgLaptopS[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
 					System.out.println(currentPcNumber + 1 + "번 PC시작");
-					// 시작 아이콘으로 변경
-					lbLaptop[currentPcNumber]
-							.setIcon(imgLaptopR[currentPcNumber]);
 					jpm.setVisible(false); // 팝업매뉴 꺼졍
+					// 시작 아이콘으로 변경
+					lbLaptop[currentPcNumber].setIcon(imgLaptopR[currentPcNumber]);
+					pcMessage = (currentPcNumber+1) + "가 실행중";
+					lbLaptop[currentPcNumber].setMessage(pcMessage);
 					currentPcNumber = -1;
 				}
 			}
 
 			// 팝업정산버튼
-			if (obj.equals(popItemPay))
-			{
-				if (imgLaptopR[currentPcNumber]
-						.equals(lbLaptop[currentPcNumber].getIcon()))
-				{
-					int result = jop.showConfirmDialog(null, "정산하시겠습니까?", "알림",
-							JOptionPane.YES_NO_OPTION);
-					if (result == JOptionPane.YES_OPTION)
-					{
+			if (obj.equals(popItemPay)) {
+				if (imgLaptopR[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
+					jpm.setVisible(false);
+					String dialogMessage = (currentPcNumber+1) + "번 PC를 정산하시겠습니까?";
+					int result = jop.showConfirmDialog(null, dialogMessage, "알림", JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
 						System.out.println(currentPcNumber + 1 + "번 PC종료");
-						lbLaptop[currentPcNumber]
-								.setIcon(imgLaptopS[currentPcNumber]);
-						jpm.setVisible(false);
+						lbLaptop[currentPcNumber].setIcon(imgLaptopS[currentPcNumber]);
+						pcMessage = "";
+						lbLaptop[currentPcNumber].setMessage(pcMessage);
 						currentPcNumber = -1;
 					}
-					jpm.setVisible(false);
 					currentPcNumber = -1;
-				} else
-				{
-					System.out.println(currentPcNumber + "번 PC는 실행 중이 아닙니다.");
-					String message = (currentPcNumber + 1)
-							+ "번 PC는 실행 중이 아닙니다.";
-					jop.showMessageDialog(null, message, "알림",
-							JOptionPane.INFORMATION_MESSAGE);
+				} else {
 					jpm.setVisible(false);
+					System.out.println(currentPcNumber + "번 PC는 실행 중이 아닙니다.");
+					String message = (currentPcNumber + 1) + "번 PC는 실행 중이 아닙니다.";
+					jop.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
 					currentPcNumber = -1;
 				}
 			}
 
 			// 기본 매뉴 종료 버튼
-			if (obj.equals(itemBasicExit))
-			{
-				int result = jop.showConfirmDialog(null, "종료하시겠습니까?", "알림",
-						JOptionPane.YES_NO_OPTION);
-				if (result == JOptionPane.YES_OPTION)
-				{
+			if (obj.equals(itemBasicExit)) {
+				int result = jop.showConfirmDialog(null, "종료하시겠습니까?", "알림", JOptionPane.YES_NO_OPTION);
+				if (result == JOptionPane.YES_OPTION) {
 					System.exit(0);
 				}
 			}
 		}
+	}
+	public static void main(String[] args) {
+		new FrameServer();
 	}
 }
