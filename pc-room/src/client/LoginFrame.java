@@ -3,8 +3,6 @@ package client;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,32 +14,36 @@ import javax.swing.JTextField;
 import util.SetFrameDisplay;
 
 public class LoginFrame extends JFrame {
-//	static int DISPLAYWIDTH = SetFrameDisplay.DISPLAYWIDTH;
-//	static int DISPLAYHEIGHT = SetFrameDisplay.DISPLAYHEIGHT;
-	static int DISPLAYWIDTH = 1600;
-	static int DISPLAYHEIGHT = 900;
+//	static int LOGIN_DISPLAY_WIDTH = SetFrameDisplay.LOGIN_DISPLAY_WIDTH;
+//	static int LOGIN_DISPLAY_HEIGHT = SetFrameDisplay.LOGIN_DISPLAY_HEIGHT;
+	static int LOGIN_DISPLAY_WIDTH = 1600;
+	static int LOGIN_DISPLAY_HEIGHT = 900;
 	
-	LoginFrame inchent;
-	JPanel panelDefault;
-	JPanel panelSouth;
-	JPanel panelInput;
+	LoginFrame 		inchent;
+	JPanel 			panelDefault;
+	JPanel 			panelNorth;
+	JPanel 			panelSouth;
+	JPanel 			panelInput;
 	
-	JLabel lbUsername;
-	JLabel lbPasswd;
-	JTextField tfUsername;
-	JPasswordField tfPasswd;
+	JLabel 			lbUsername;
+	JLabel 			lbPasswd;
+	JTextField 		tfUsername;
+	JPasswordField 	tfPasswd;
 	
-	JButton btnSignIn;
-	JButton btnSignUp;
-	JButton btnShutDown;
+	JButton 		btnSignIn;
+	JButton 		btnSignUp;
+	JButton 		btnShutDown;
+	
+	boolean loginFlag;
 	
 	public LoginFrame(String title) {
 		super(title);
 		
 		setLayout(null);
-		setSize(DISPLAYWIDTH, DISPLAYHEIGHT);
+		setSize(LOGIN_DISPLAY_WIDTH, LOGIN_DISPLAY_HEIGHT);
+		setUndecorated(true);	// 
 		SetFrameDisplay.setFrameCenter(this);	// 화면 가운데 표시
-//		SetFrameDisplay.setFullMode(this);	// 전체화면 모드
+		
 		initPanel();
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -55,11 +57,16 @@ public class LoginFrame extends JFrame {
 		panelDefault.setLocation(0,0);
 		panelDefault.setLayout(null);
 		
+		panelNorth = new JPanel();
+		panelNorth.setSize(LOGIN_DISPLAY_WIDTH,680);
+		panelNorth.setLocation(0, 0);
+		panelNorth.setBackground(Color.BLACK);
+		
 		panelSouth = new JPanel();
-		panelSouth.setSize(DISPLAYWIDTH,220);
+		panelSouth.setSize(LOGIN_DISPLAY_WIDTH,220);
 		panelSouth.setLayout(null);
 		panelSouth.setBackground(Color.CYAN);
-		panelSouth.setLocation(0, DISPLAYHEIGHT-panelSouth.getHeight());
+		panelSouth.setLocation(0, LOGIN_DISPLAY_HEIGHT-panelSouth.getHeight());
 		
 		btnShutDown = new JButton("O");
 		btnShutDown.setBounds(50, panelSouth.getHeight()-100, 50, 50);
@@ -120,10 +127,11 @@ public class LoginFrame extends JFrame {
 				System.out.println(strId);
 				System.out.println(strPasswod);
 				// data base 검사
-				boolean loginFlag = true;
+				loginFlag = true;
 				if(loginFlag) {
 					dispose();
 					// 로그인 후 프로그램 실행
+					new MainFrame();
 					// ArrayList에 회원정보를 담은 후 넘겨줌
 				}
 			}
@@ -136,7 +144,7 @@ public class LoginFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SignUp su = new SignUp(inchent);
+				new SignUp(inchent);
 			}
 		});
 		
@@ -150,6 +158,7 @@ public class LoginFrame extends JFrame {
 		panelSouth.add(btnShutDown);
 		panelSouth.add(panelInput);
 		
+		panelDefault.add(panelNorth);
 		panelDefault.add(panelSouth);
 		add(panelDefault);
 	}
