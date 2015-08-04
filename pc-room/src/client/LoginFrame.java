@@ -41,7 +41,7 @@ public class LoginFrame extends JFrame {
 		
 		setLayout(null);
 		setSize(LOGIN_DISPLAY_WIDTH, LOGIN_DISPLAY_HEIGHT);
-		setUndecorated(true);	// 
+		setUndecorated(true);	// 타이틀바 
 		SetFrameDisplay.setFrameCenter(this);	// 화면 가운데 표시
 		
 		initPanel();
