@@ -1,6 +1,5 @@
 package client;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,6 +18,8 @@ public class MainFrame extends JFrame {
 	public static int BAR_HEIGHT = 30;
 	public static int BAR_CONTENT_WIDTH = 30;
 	
+	Member loginUser;
+	
 	JPanel			  pTopBar;
 	JLabel 			  lbBarLogo;
 	ImageIcon 		  imgBarLogo;
@@ -26,6 +27,7 @@ public class MainFrame extends JFrame {
 	JButton 		  btnMinimize;
 	
 	JPanel 			  pContent;
+	JLabel 			  lbLogo;
 	ImageIcon 		  imgLogo;
 	JLabel 			  lbSeatNumber;
 	JLabel 			  lbRemainTime;
@@ -35,12 +37,13 @@ public class MainFrame extends JFrame {
 	JButton 		  btnMessage;
 	JButton 	  	  btnExit;
 	
-	public MainFrame() {
+	public MainFrame(Member loginUser) {
 		setTitle("PC방 클라이언트");
 		setLayout(null);
 		setBounds(SetFrameDisplay.DISPLAY_WIDTH-CLIENT_DISPLAY_WIDTH, 25, CLIENT_DISPLAY_WIDTH, CLIENT_DISPLAY_HEIGHT);
 		setUndecorated(true); 	// 타이틀바 삭제
 		
+		this.loginUser = loginUser;
 		initTopBar();
 		initContent();
 		
@@ -83,12 +86,22 @@ public class MainFrame extends JFrame {
 		pContent = new JPanel();
 		pContent.setBounds(0,BAR_HEIGHT,CLIENT_DISPLAY_WIDTH,CLIENT_DISPLAY_HEIGHT-BAR_CONTENT_WIDTH);
 		pContent.setLayout(null);
-		pContent.setBackground(Color.BLACK);
+		
+		imgLogo = new ImageIcon("./src/images/client/contentpanel/logo.jpeg");
+		lbLogo = new JLabel();
+		lbLogo.setIcon(imgLogo);
+		lbLogo.setSize(80,80);
+		lbLogo.setLocation(20,20);
+		
+		lbSeatNumber = new JLabel("24번");
+		lbSeatNumber.setSize(80,80);
+		lbSeatNumber.setLocation(lbLogo.getX()+lbLogo.getWidth(), lbLogo.getY());
+		SetLabelAlignment.setAllAlignment(lbSeatNumber);
+		
+		
+		pContent.add(lbLogo);
+		pContent.add(lbSeatNumber);
 		
 		add(pContent);
-	}
-	
-	public static void main(String[] args) {
-		new MainFrame();
 	}
 }

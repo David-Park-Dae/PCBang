@@ -7,17 +7,21 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import util.SetFrameDisplay;
+import util.SqlUtil;
 
 public class LoginFrame extends JFrame {
 //	static int LOGIN_DISPLAY_WIDTH = SetFrameDisplay.LOGIN_DISPLAY_WIDTH;
 //	static int LOGIN_DISPLAY_HEIGHT = SetFrameDisplay.LOGIN_DISPLAY_HEIGHT;
 	static int LOGIN_DISPLAY_WIDTH = 1600;
 	static int LOGIN_DISPLAY_HEIGHT = 900;
+	
+	Member loginUser;
 	
 	LoginFrame 		inchent;
 	JPanel 			panelDefault;
@@ -33,8 +37,6 @@ public class LoginFrame extends JFrame {
 	JButton 		btnSignIn;
 	JButton 		btnSignUp;
 	JButton 		btnShutDown;
-	
-	boolean loginFlag;
 	
 	public LoginFrame(String title) {
 		super(title);
@@ -123,17 +125,11 @@ public class LoginFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String strId = tfUsername.getText();
-				String strPasswod = new String(tfPasswd.getPassword());
+				String strPasswd = new String(tfPasswd.getPassword());
 				System.out.println(strId);
-				System.out.println(strPasswod);
+				System.out.println(strPasswd);
 				// data base 검사
-				loginFlag = true;
-				if(loginFlag) {
-					dispose();
-					// 로그인 후 프로그램 실행
-					new MainFrame();
-					// ArrayList에 회원정보를 담은 후 넘겨줌
-				}
+				SqlUtil.login(inchent,strId, strPasswd);
 			}
 		});
 		

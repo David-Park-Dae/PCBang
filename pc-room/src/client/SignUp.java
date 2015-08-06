@@ -3,11 +3,16 @@ package client;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,12 +22,17 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import util.DBConnection;
+import util.SqlUtil;
+
 public class SignUp extends JFrame{
 
-	public static int XMARGIN = 20;
-	public static int YMARGIN = 30;
-	public static int XGAB = 20;
-	public static int YGAB = 15;
+	public final int XMARGIN = 20;
+	public final int YMARGIN = 30;
+	public final int XGAB = 20;
+	public final int YGAB = 15;
+
+	Connection conn;
 	
 	JPanel panelMain;
 	
@@ -42,6 +52,10 @@ public class SignUp extends JFrame{
 	boolean chkIdFlag = false;
 	boolean chkPasswdFlag = false;
 	
+	String strName;
+	String strUsername;
+	String strPasswd;
+	
 	public SignUp(JFrame owner) {
 		this.setTitle("회원가입");
 		this.setLayout(null);
@@ -53,7 +67,6 @@ public class SignUp extends JFrame{
 		panelMain.setLayout(null);
 		panelMain.setSize(260,230);
 		panelMain.setLocation(XMARGIN, YMARGIN);
-		
 		
 		
 		lbName = new JLabel("이름");
@@ -71,16 +84,15 @@ public class SignUp extends JFrame{
 		tfUsername = new JTextField();
 		tfUsername.setSize(150,30);
 		tfUsername.setLocation(XGAB*2+lbUsername.getWidth(), lbUsername.getY());
-		tfUsername.addKeyListener(new KeyAdapter() {
+		tfUsername.addFocusListener(new FocusAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {
-				String username = tfUsername.getText();
+			public void focusLost(FocusEvent e) {
+				strUsername = tfUsername.getText();
 				// DB에 가서 검사
-				if(chkIdFlag) {
-					tfUsername.setBackground(Color.red);
-				} else {
-					tfUsername.setBackground(Color.WHITE);
-				}
+				chkIdFlag = SqlUtil.chkId(strUsername);
+
+				if(chkIdFlag) 	tfUsername.setBackground(Color.red);
+				else 			tfUsername.setBackground(Color.WHITE);
 			}
 		});
 		
@@ -102,7 +114,7 @@ public class SignUp extends JFrame{
 		tfChkPasswd.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				String strPasswd = new String(tfPasswd.getPassword());
+				strPasswd = new String(tfPasswd.getPassword());
 				String strChkPasswd = new String(tfChkPasswd.getPassword());
 				// 비밀번호가 같은지 같지 않는지 검사
 				if(!strPasswd.equals(strChkPasswd)) {
@@ -123,7 +135,14 @@ public class SignUp extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(!chkPasswdFlag) {	// 입력한 패스워드가 같지 않을 경우
+				strName = tfName.getText();
+				strUsername = tfUsername.getText();
+				strPasswd = new String(tfPasswd.getPassword());
+				
+				if(strName.equals("")) {
+					JOptionPane.showMessageDialog(panelMain, "이름을 확인해주세요.");
+					tfName.requestFocus();
+				} else if(!chkPasswdFlag) {	// 입력한 패스워드가 같지 않을 경우
 					JOptionPane.showMessageDialog(panelMain, "비밀번호를 확인해주세요.");
 					tfChkPasswd.requestFocus();
 				} else if (chkIdFlag) {
@@ -131,8 +150,11 @@ public class SignUp extends JFrame{
 					tfUsername.requestFocus();
 				} else {
 					// DB처리
-					
-					JOptionPane.showMessageDialog(panelMain, "회원가입이 완료되었습니다.");
+					boolean flag = SqlUtil.signUp(strName, strUsername, strPasswd);
+					if(flag)
+						JOptionPane.showMessageDialog(panelMain, "회원가입이 완료되었습니다.");
+					else
+						JOptionPane.showMessageDialog(panelMain, "회원가입에 실패하였습니다.");
 					dispose();
 				}
 				
@@ -146,7 +168,9 @@ public class SignUp extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				int end = JOptionPane.showConfirmDialog(panelMain, "저장되지 않습니다. 취소하시겠습니까?", "주의!",JOptionPane.YES_NO_OPTION);
+				if(end == JOptionPane.OK_OPTION) 
+					dispose();
 			}
 		});
 		
@@ -171,7 +195,9 @@ public class SignUp extends JFrame{
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				dispose();
+				int end = JOptionPane.showConfirmDialog(panelMain, "저장되지 않습니다. 종료하시겠습니까?", "주의!",JOptionPane.YES_NO_OPTION);
+				if(end == JOptionPane.OK_OPTION) 
+					dispose();
 			}
 		});
 		
