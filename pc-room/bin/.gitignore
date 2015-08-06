@@ -69,3 +69,5 @@ bin/**
  
 # PDT-specific
 .buildpath
+/images/
+/util/
