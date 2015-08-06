@@ -9,12 +9,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import util.ClientExit;
 import util.SetFrameDisplay;
 import util.SetLabelAlignment;
 
 public class MainFrame extends JFrame {
 	public static int CLIENT_DISPLAY_WIDTH = 400;
-	public static int CLIENT_DISPLAY_HEIGHT = 250;
+	public static int CLIENT_DISPLAY_HEIGHT = 200;
 	public static int BAR_HEIGHT = 30;
 	public static int BAR_CONTENT_WIDTH = 30;
 	
@@ -44,6 +45,7 @@ public class MainFrame extends JFrame {
 		setUndecorated(true); 	// 타이틀바 삭제
 		
 		this.loginUser = loginUser;
+		System.out.println(loginUser.getRestTime()+"\n"+loginUser.seatNumber+"번 자리");
 		initTopBar();
 		initContent();
 		
@@ -64,7 +66,7 @@ public class MainFrame extends JFrame {
 		
 		lbPCBangName = new JLabel("PC BANG");
 		lbPCBangName.setBounds(BAR_CONTENT_WIDTH,0,CLIENT_DISPLAY_WIDTH-BAR_CONTENT_WIDTH*2,BAR_HEIGHT);
-		SetLabelAlignment.setAllAlignment(lbPCBangName);
+		SetLabelAlignment.setAllCenterAlignment(lbPCBangName);
 		
 		btnMinimize = new JButton("-");
 		btnMinimize.setBounds(lbPCBangName.getX()+lbPCBangName.getWidth(),0,BAR_CONTENT_WIDTH,BAR_HEIGHT);
@@ -93,15 +95,64 @@ public class MainFrame extends JFrame {
 		lbLogo.setSize(80,80);
 		lbLogo.setLocation(20,20);
 		
-		lbSeatNumber = new JLabel("24번");
+		lbSeatNumber = new JLabel(loginUser.seatNumber);
 		lbSeatNumber.setSize(80,80);
 		lbSeatNumber.setLocation(lbLogo.getX()+lbLogo.getWidth(), lbLogo.getY());
-		SetLabelAlignment.setAllAlignment(lbSeatNumber);
+		SetLabelAlignment.setAllCenterAlignment(lbSeatNumber);
 		
+		lbRemainTime = new JLabel("남은시간");
+		lbRemainTime.setBounds(this.getWidth()-100,lbSeatNumber.getY(),80,35);
+		SetLabelAlignment.setAllRightAlignment(lbRemainTime);
+		lbLiveTime = new JLabel("15:23");
+		lbLiveTime.setBounds(lbRemainTime.getX(), lbRemainTime.getY()+lbRemainTime.getHeight()+10, 80, 35);
+		SetLabelAlignment.setAllRightAlignment(lbLiveTime);
+		
+		btnOrder 	= new JButton("주문하기");
+		btnOrder.setSize(100,40);
+		btnOrder.setLocation(lbLogo.getX()+25,lbLogo.getY()+lbLogo.getHeight()+15);
+		btnOrder.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 음식주문 프레임 띄우기
+				
+			}
+		});
+		
+		btnMessage 	= new JButton("메세지");
+		btnMessage.setSize(100,40);
+		btnMessage.setLocation(btnOrder.getX()+btnOrder.getWidth()+10,btnOrder.getY());
+		btnMessage.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 서버에 메세지 전송
+				
+			}
+		});
+		
+		btnExit  	= new JButton("사용종료");
+		btnExit.setSize(100,40);
+		btnExit.setLocation(btnMessage.getX()+btnMessage.getWidth()+10,btnMessage.getY());
+		btnExit.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 1. 남은 시간 저장
+				loginUser.restTimeSave();
+				// 2. 종료신호 서버에 전송
+				// 3. 컴퓨터 종료
+				ClientExit.exit();
+			}
+		});
 		
 		pContent.add(lbLogo);
 		pContent.add(lbSeatNumber);
-		
+		pContent.add(lbRemainTime);
+		pContent.add(lbLiveTime);
+		pContent.add(btnOrder);
+		pContent.add(btnMessage);
+		pContent.add(btnExit);
 		add(pContent);
 	}
 }

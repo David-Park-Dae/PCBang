@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import util.ClientExit;
 import util.SetFrameDisplay;
 import util.SqlUtil;
 
@@ -20,6 +21,8 @@ public class LoginFrame extends JFrame {
 //	static int LOGIN_DISPLAY_HEIGHT = SetFrameDisplay.LOGIN_DISPLAY_HEIGHT;
 	static int LOGIN_DISPLAY_WIDTH = 1600;
 	static int LOGIN_DISPLAY_HEIGHT = 900;
+	
+	String seatNumber;
 	
 	Member loginUser;
 	
@@ -38,8 +41,9 @@ public class LoginFrame extends JFrame {
 	JButton 		btnSignUp;
 	JButton 		btnShutDown;
 	
-	public LoginFrame(String title) {
+	public LoginFrame(String seatNumber, String title) {
 		super(title);
+		this.seatNumber = seatNumber;
 		
 		setLayout(null);
 		setSize(LOGIN_DISPLAY_WIDTH, LOGIN_DISPLAY_HEIGHT);
@@ -60,12 +64,12 @@ public class LoginFrame extends JFrame {
 		panelDefault.setLayout(null);
 		
 		panelNorth = new JPanel();
-		panelNorth.setSize(LOGIN_DISPLAY_WIDTH,680);
+		panelNorth.setSize(LOGIN_DISPLAY_WIDTH,700);
 		panelNorth.setLocation(0, 0);
 		panelNorth.setBackground(Color.BLACK);
 		
 		panelSouth = new JPanel();
-		panelSouth.setSize(LOGIN_DISPLAY_WIDTH,220);
+		panelSouth.setSize(LOGIN_DISPLAY_WIDTH,200);
 		panelSouth.setLayout(null);
 		panelSouth.setBackground(Color.CYAN);
 		panelSouth.setLocation(0, LOGIN_DISPLAY_HEIGHT-panelSouth.getHeight());
@@ -75,26 +79,13 @@ public class LoginFrame extends JFrame {
 		btnShutDown.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 컴퓨터 종료 코드
-				System.out.println(System.getProperty("os.name"));
-//				Runtime runtime = Runtime.getRuntime();
-//				try {
-//					
-//					Process process = runtime.exec("C:\\WINDOWS\\system32\\cmd.exe");
-//					OutputStream os = process.getOutputStream();
-//					os.write("shutdown -s -f \n\r".getBytes());
-//					os.close();
-//					process.waitFor();
-//				} catch (IOException e1) {
-//					System.err.println("runtimeExec IOException: " + e1.getMessage());
-//				} catch (InterruptedException e1) {
-//					e1.printStackTrace();
-//				}
+				// 컴퓨터 종료
+				ClientExit.exit();
 			}
 		});
 		
 		panelInput = new JPanel();
-		panelInput.setSize(370,300);
+		panelInput.setSize(370,200);
 		panelInput.setLayout(null);
 		panelInput.setLocation(panelSouth.getWidth()-panelInput.getWidth(), 0);
 		
@@ -129,13 +120,13 @@ public class LoginFrame extends JFrame {
 				System.out.println(strId);
 				System.out.println(strPasswd);
 				// data base 검사
-				SqlUtil.login(inchent,strId, strPasswd);
+				SqlUtil.login(inchent, strId, strPasswd);
 			}
 		});
 		
 		btnSignUp = new JButton("회원가입");
 		btnSignUp.setSize(100,40);
-		btnSignUp.setLocation((panelInput.getWidth()-btnSignUp.getWidth())/2, panelInput.getHeight()-btnSignUp.getHeight()-120);
+		btnSignUp.setLocation((panelInput.getWidth()-btnSignUp.getWidth())/2, btnSignIn.getY()+btnSignIn.getHeight()+20);
 		btnSignUp.addActionListener(new ActionListener() {
 
 			@Override
@@ -157,5 +148,9 @@ public class LoginFrame extends JFrame {
 		panelDefault.add(panelNorth);
 		panelDefault.add(panelSouth);
 		add(panelDefault);
+	}
+	
+	public String getSeatNumber() {
+		return this.seatNumber;
 	}
 }

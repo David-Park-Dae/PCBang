@@ -13,31 +13,33 @@ import client.Member;
 
 public class SqlUtil {
 	
-	public static Connection conn = 		null;
-	public static ResultSet rs = 			null;
+	public static Connection conn 		  = null;
+	public static ResultSet rs            =	null;
 	public static PreparedStatement pstmt = null;
 	
-	public static boolean flag = true;
+	public static boolean flag 			  = true;
 	
 	private static Member loginUser;
 	
 	// 로그인 sql 처리
 	public static void login(LoginFrame lf, String inputId, String inputPasswd) {
 		conn = DBConnection.getConnection();
-		String sql = "SELECT mb_pwd, mb_resttime FROM member WHERE mb_id=?";
+		String sql = "SELECT mb_name, mb_pwd, mb_resttime FROM member WHERE mb_id=?";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, inputId);
 			rs = pstmt.executeQuery();
 			
-			// 값이 있을 경우에만 실행
+			// 회원이 등록되어 있을 경우에만 실행
 			if(rs.next() == true) {
 				long restTime = rs.getLong("mb_resttime");
 				String passwd = rs.getString("mb_pwd");
+				String name   = rs.getString("mb_name");
+				
+				// 패스워드가 맞을 때
 				if(passwd.equals(inputPasswd))  {
-					
 					// 로그인한 유저의 정보를 담는다.
-					loginUser = new Member(inputId,passwd,restTime);
+					loginUser = new Member(lf.getSeatNumber(), inputId ,name, restTime);
 					
 					// 유저의 남은 시간을 검사 후
 					// 없을 경우 로그인하지 못하게 막음.
@@ -47,14 +49,14 @@ public class SqlUtil {
 						new MainFrame(loginUser);	// 유저정보를 메인 프레임에 넘긴다. ( 서버한테도 보내야함 )
 						lf.dispose();	// 로그인프레임 종료 시킨다.
 					}
-				} else {
-					JOptionPane.showMessageDialog(null, "아이디와 비밀번호를 확인해주세요.");
+				} else { // 패스워드가 맞지 않을 경우
+					JOptionPane.showMessageDialog(null, "비밀번호를 확인해주세요.");
 				}
-			} else { // 값이 없을 경우는 회원정보가 없는것을 뜻함
+			} else { // 회원정보가 없을 경우
 				JOptionPane.showMessageDialog(null, "회원정보가 없습니다.");
 			}
 			
-			System.out.println("sql 전송 완료");
+			System.out.println("로그인 sql 전송 완료");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, "서버와 연결이 끊겼습니다.");
@@ -98,7 +100,7 @@ public class SqlUtil {
 			pstmt.setString(3, passwd);
 			rs = pstmt.executeQuery();
 			flag = true;
-			System.out.println("sql 전송 완료");
+			System.out.println("회원가입 sql 전송 완료");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, "서버와 연결이 끊겼습니다.");
@@ -109,11 +111,32 @@ public class SqlUtil {
 		return flag;
 	} // 회원가입 끝
 	
+	// 유저정보 저장 처리
+		public static void restTimeSave(Member user) {
+			conn = DBConnection.getConnection();
+			String sql = "UPDATE member SET mb_resttime=? WHERE mb_id=?";
+			try {
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setLong(1,user.getRestTime());
+				pstmt.setString(2, user.getId());
+				rs = pstmt.executeQuery();
+				System.out.println("유저정보 저장 sql 전송 완료");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(null, "서버와 연결이 끊겼습니다.");
+				e.printStackTrace();
+				System.exit(0);
+			}
+			sqlExit();
+		} // 유저정보 저장 끝
+	
 	// 자원 정리
 	public static void sqlExit() {
 		try {
 			conn.close();
+			conn = null;
 			rs.close();
+			rs = null;
 			System.out.println("DB / ResultSet 해제");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -1,6 +1,7 @@
 package client;
 
-import java.util.Date;
+import util.ClientExit;
+import util.SqlUtil;
 
 public class Member {
 	
@@ -8,23 +9,19 @@ public class Member {
 	
 	String id;
 	String name;
-	int seatNumber;
+	String seatNumber;
 	
 	
-	public Member(String id, String name, long restTime) {
+	public Member(String seatNumber, String id, String name, long restTime) {
 		this.id = id;
 		this.name = name;
-		this.restTime = restTime;
-	}
-
-	public int getSeatNumber() {
-		return seatNumber;
-	}
-
-	public void setSeatNumber(int seatNumber) {
 		this.seatNumber = seatNumber;
+		this.setRestTime(restTime);
 	}
-
+	public String getId() {
+		return id;
+	}
+	
 	public long getRestTime() {
 		return restTime;
 	}
@@ -33,5 +30,9 @@ public class Member {
 		this.restTime = restTime;
 	}
 	
+	public void restTimeSave() {
+		SqlUtil.restTimeSave(this);
+		ClientExit.exit();
+	}
 	
 }
