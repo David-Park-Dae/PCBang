@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -83,6 +84,8 @@ public class FrameServer extends JFrame {
 				}
 			}
 		});
+		
+		
 
 		// 핸들러들 생성
 		MouseHandler mouseHandler = new MouseHandler();
@@ -202,8 +205,16 @@ public class FrameServer extends JFrame {
 				num++;
 			}
 		}
-
+		
+		runChatServer();
+		
 		setVisible(true);
+	}
+	
+	private void runChatServer() {
+		ServerBackground serverBackground = ServerBackground.getInstance();
+		Thread th = new Thread(serverBackground);
+		th.start();
 	}
 
 	class MouseHandler implements MouseListener {

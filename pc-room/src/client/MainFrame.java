@@ -2,6 +2,7 @@ package client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -9,45 +10,51 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import server.ServerBackground;
 import util.ClientExit;
 import util.SetFrameDisplay;
 import util.SetLabelAlignment;
 
 public class MainFrame extends JFrame {
-	public static int CLIENT_DISPLAY_WIDTH = 400;
-	public static int CLIENT_DISPLAY_HEIGHT = 200;
-	public static int BAR_HEIGHT = 30;
-	public static int BAR_CONTENT_WIDTH = 30;
+	public static int 		  CLIENT_DISPLAY_WIDTH 		= 400;
+	public static int 		  CLIENT_DISPLAY_HEIGHT 	= 200;
+	public static int 		  BAR_HEIGHT 				= 30;
+	public static int 		  BAR_CONTENT_WIDTH 		= 30;
 	
-	Member loginUser;
+	public 	ConnectMember 	  loginUser     = null;
+	public 	ClientChatGui	  clientChatGui = null;
+	private ClientBackground  client 		= new ClientBackground();
 	
-	JPanel			  pTopBar;
-	JLabel 			  lbBarLogo;
-	ImageIcon 		  imgBarLogo;
-	JLabel 		 	  lbPCBangName;
-	JButton 		  btnMinimize;
+	private JPanel			  pTopBar;
+	private JLabel 			  lbBarLogo;
+	private ImageIcon 		  imgBarLogo;
+	private JLabel 		 	  lbPCBangName;
+	private JButton 		  btnMinimize;
 	
-	JPanel 			  pContent;
-	JLabel 			  lbLogo;
-	ImageIcon 		  imgLogo;
-	JLabel 			  lbSeatNumber;
-	JLabel 			  lbRemainTime;
-	JLabel 			  lbLiveTime;
+	private JPanel 			  pContent;
+	private JLabel 			  lbLogo;
+	private ImageIcon 		  imgLogo;
+	private JLabel 			  lbSeatNumber;
+	private JLabel 			  lbRemainTime;
+	private JLabel 			  lbLiveTime;
 	
-	JButton 		  btnOrder;
-	JButton 		  btnMessage;
-	JButton 	  	  btnExit;
+	private JButton 		  btnOrder;
+	private JButton 		  btnMessage;
+	private JButton 	  	  btnExit;
 	
-	public MainFrame(Member loginUser) {
+	public MainFrame(ConnectMember loginUser) {
 		setTitle("PC방 클라이언트");
 		setLayout(null);
 		setBounds(SetFrameDisplay.DISPLAY_WIDTH-CLIENT_DISPLAY_WIDTH, 25, CLIENT_DISPLAY_WIDTH, CLIENT_DISPLAY_HEIGHT);
 		setUndecorated(true); 	// 타이틀바 삭제
 		
 		this.loginUser = loginUser;
-		System.out.println(loginUser.getRestTime()+"\n"+loginUser.seatNumber+"번 자리");
+		System.out.println(loginUser.getRestTime()+"\n"+loginUser.getSeatNumber()+"번 자리");
+		
 		initTopBar();
 		initContent();
+		
+		initConnectServer();
 		
 		setVisible(true);
 	}
@@ -95,7 +102,7 @@ public class MainFrame extends JFrame {
 		lbLogo.setSize(80,80);
 		lbLogo.setLocation(20,20);
 		
-		lbSeatNumber = new JLabel(loginUser.seatNumber);
+		lbSeatNumber = new JLabel(loginUser.getSeatNumber());
 		lbSeatNumber.setSize(80,80);
 		lbSeatNumber.setLocation(lbLogo.getX()+lbLogo.getWidth(), lbLogo.getY());
 		SetLabelAlignment.setAllCenterAlignment(lbSeatNumber);
@@ -126,8 +133,16 @@ public class MainFrame extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 서버에 메세지 전송
-				
+				// 서버에 메세지 프레임 표시
+				if(clientChatGui == null) {
+					System.out.println("메세지 호출 : "+loginUser.getSeatNumber());
+					try {
+						clientChatGui = new ClientChatGui(loginUser.getSeatNumber());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
 			}
 		});
 		
@@ -154,5 +169,9 @@ public class MainFrame extends JFrame {
 		pContent.add(btnMessage);
 		pContent.add(btnExit);
 		add(pContent);
+	}
+	
+	void initConnectServer() {
+		client.connet();
 	}
 }

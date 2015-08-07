@@ -20,6 +20,8 @@ public class ClientMain extends JFrame{
 		super("자리번호 입력");
 		setSize(200, 100);
 		setLayout(null);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 		SetFrameDisplay.setFrameCenter(this);
 		
 		tfSeatNumber = new JTextField();
@@ -37,6 +39,7 @@ public class ClientMain extends JFrame{
 				if(sn > 25) {
 					JOptionPane.showMessageDialog(null, "25대의 PC밖에 없습니다. 다시 입력해주십시오.");
 				} else {
+					if(sn < 10) seatNumber = "0"+seatNumber;
 					new LoginFrame(seatNumber, TITLE);
 					dispose();
 				}
