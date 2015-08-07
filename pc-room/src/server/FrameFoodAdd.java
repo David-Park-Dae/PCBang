@@ -43,9 +43,9 @@ public class FrameFoodAdd extends JFrame implements ActionListener, KeyListener 
 	JButton btnAddConfirm;
 	JButton btnAddCancel;
 	
-	Food food;
+	FoodHelper food;
 
-	public FrameFoodAdd(Food food) {
+	public FrameFoodAdd(FoodHelper food) {
 		this.food = food;
 		setTitle("음식추가");
 		setSize(300, 150);

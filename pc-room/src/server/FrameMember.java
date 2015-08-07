@@ -26,11 +26,11 @@ import javax.swing.table.TableRowSorter;
 import util.SetFrameDisplay;
 
 public class FrameMember extends JFrame implements ActionListener {
-	private String id;
-	private Connection conn;
+	String id;
 	String[] selectedCell = new String[3];
 	String selectedId;
 
+	private Connection conn;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	StringBuffer sql;
@@ -39,7 +39,7 @@ public class FrameMember extends JFrame implements ActionListener {
 	DefaultTableModel model;
 	String[] colName = { "이름", "아이디", "남은시간" };
 	String[][] rowData;
-	Member member;
+	MemberHelper member;
 
 	JPanel plBackground;
 	// JPanel plMainScreen;
@@ -79,7 +79,7 @@ public class FrameMember extends JFrame implements ActionListener {
 		table.setAutoCreateRowSorter(true);
 		TableRowSorter foodSorter = new TableRowSorter(table.getModel());
 		table.setRowSorter(foodSorter);
-		member = new Member(model);
+		member = new MemberHelper(model);
 
 		plBackground = new JPanel();
 		plBackground.setLayout(new BorderLayout());

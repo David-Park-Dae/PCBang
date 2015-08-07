@@ -21,14 +21,10 @@ import javax.swing.table.TableRowSorter;
 import util.SetFrameDisplay;
 
 public class FrameFood extends JFrame implements ActionListener {
-	// private Connection conn;
 	String[] selectedCell = new String[3];
 	String selectedNo;
-	// PreparedStatement pstmt = null;
-	// ResultSet rs = null;
-	// StringBuffer sql;
 	JOptionPane jop;
-	Food food;
+	FoodHelper food;
 
 	JPanel plBackground;
 
@@ -85,7 +81,7 @@ public class FrameFood extends JFrame implements ActionListener {
 		TableRowSorter foodSorter = new TableRowSorter(tableFood.getModel());
 		tableFood.setRowSorter(foodSorter);
 
-		food = new Food(modelFood);
+		food = new FoodHelper(modelFood);
 		plFoodScrollPane = new JScrollPane(tableFood, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		plFoodBtmscreen = new JPanel();
