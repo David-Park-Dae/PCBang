@@ -13,6 +13,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import util.ClientExit;
+import util.ObjectClient;
 import util.SetFrameDisplay;
 import util.SqlUtil;
 

@@ -9,7 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import util.ClientExit;
+import util.ObjectClient;
+import util.Resttimer;
 import util.SetFrameDisplay;
 import util.SetLabelAlignment;
 
@@ -37,6 +38,7 @@ public class MainFrame extends JFrame {
 	JButton 		  btnOrder;
 	JButton 		  btnMessage;
 	JButton 	  	  btnExit;
+	Resttimer		  resttimer;
 	
 	public MainFrame(Member loginUser) {
 		setTitle("PC방 클라이언트");
@@ -48,6 +50,9 @@ public class MainFrame extends JFrame {
 		System.out.println(loginUser.getRestTime()+"\n"+loginUser.seatNumber+"번 자리");
 		initTopBar();
 		initContent();
+		
+		resttimer = new Resttimer();
+		resttimer.start(loginUser, lbRemainTime, lbLiveTime);
 		
 		setVisible(true);
 	}
@@ -103,7 +108,7 @@ public class MainFrame extends JFrame {
 		lbRemainTime = new JLabel("남은시간");
 		lbRemainTime.setBounds(this.getWidth()-100,lbSeatNumber.getY(),80,35);
 		SetLabelAlignment.setAllRightAlignment(lbRemainTime);
-		lbLiveTime = new JLabel("15:23");
+		lbLiveTime = new JLabel("현재시간");
 		lbLiveTime.setBounds(lbRemainTime.getX(), lbRemainTime.getY()+lbRemainTime.getHeight()+10, 80, 35);
 		SetLabelAlignment.setAllRightAlignment(lbLiveTime);
 		
@@ -139,10 +144,14 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 1. 남은 시간 저장
+				resttimer.cancelTimer(); //타이머 시간줄이기 캔슬
+				loginUser.setRestTime(resttimer.getResttime()); //맴버의 resttime을 resttimer의 남은시간으로 저장
 				loginUser.restTimeSave();
 				// 2. 종료신호 서버에 전송
+				ObjectClient.sendObject(loginUser);
 				// 3. 컴퓨터 종료
-				ClientExit.exit();
+				System.out.println("컴퓨터종료");
+//				ClientExit.exit();
 			}
 		});
 		

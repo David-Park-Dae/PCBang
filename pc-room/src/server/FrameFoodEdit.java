@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import util.DBConnection;
 import util.SetFrameDisplay;
 
 public class FrameFoodEdit extends JFrame implements ActionListener, KeyListener {
@@ -141,7 +142,7 @@ public class FrameFoodEdit extends JFrame implements ActionListener, KeyListener
 	}
 
 	private void checkName() {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 
 		sql = new StringBuffer();
 		sql.append("select fd_name from food ");

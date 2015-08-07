@@ -32,7 +32,7 @@ public class SqlUtil {
 			
 			// 회원이 등록되어 있을 경우에만 실행
 			if(rs.next() == true) {
-				long restTime = rs.getLong("mb_resttime");
+				int restTime = rs.getInt("mb_resttime");
 				String passwd = rs.getString("mb_pwd");
 				String name   = rs.getString("mb_name");
 				
@@ -46,7 +46,8 @@ public class SqlUtil {
 					if(loginUser.getRestTime() == 0) {
 						JOptionPane.showMessageDialog(null, "충전 후 이용해주세요.");
 					} else {
-						new MainFrame(loginUser);	// 유저정보를 메인 프레임에 넘긴다. ( 서버한테도 보내야함 )
+						ObjectClient.sendObject(loginUser); // 유저정보를 서버에 넘긴 후 서버가 신호를 보낼때까지 기다린다.
+						new MainFrame(loginUser);	// 유저정보를 메인 프레임에 넘긴다.
 						lf.dispose();	// 로그인프레임 종료 시킨다.
 					}
 				} else { // 패스워드가 맞지 않을 경우

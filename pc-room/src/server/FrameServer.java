@@ -11,16 +11,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -34,9 +35,11 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
+import client.Member;
 import util.PLabel;
 import util.Resttimer;
 import util.SetFrameDisplay;
+import util.SignalDetector;
 
 public class FrameServer extends JFrame {
 
@@ -77,28 +80,33 @@ public class FrameServer extends JFrame {
 	// 우클릭시 팝업 이미지
 	JPopupMenu jpm;
 	JMenuItem popItemName;
-	JMenuItem popItemStart;
 	JMenuItem popItemPay;
 	JMenuItem popItemCharge;
 	JMenuItem popItemChat;
 	ObjectMultiServer oms;
 	Thread threadMultiServer;
 	Thread threadBringMember;
-	
-	//Resttimer를 자리마다 배치하기위한 배열
+
+	// Resttimer를 자리마다 배치하기위한 배열
 	Resttimer[] resttimer;
+
+	// 서버에서 클라이언트로 메세지를 보내기위한 변수들
+	Socket socketToClient;
+	BufferedWriter bw;
+	BufferedReader br;
+	String signal;
 
 	public FrameServer() {
 		setTitle("관리자 프로그램");
 		oms = new ObjectMultiServer();
 		threadMultiServer = new Thread(oms);
 		threadMultiServer.start();
-		
+
 		memberHelper = new MemberHelper();
-		
-		//resttimer를 자리마다 두기위해 자릿수만큼 생성
+
+		// resttimer를 자리마다 두기위해 자릿수만큼 생성
 		resttimer = new Resttimer[PC_TOTAL];
-		for(int i=0 ; i<PC_TOTAL; i++){
+		for (int i = 0; i < PC_TOTAL; i++) {
 			resttimer[i] = new Resttimer();
 		}
 
@@ -108,6 +116,7 @@ public class FrameServer extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
+				jpm.setVisible(false);
 				int result = JOptionPane.showConfirmDialog(null, "종료하시겠습니까?", "알림", JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION) {
 					System.exit(0);
@@ -202,20 +211,17 @@ public class FrameServer extends JFrame {
 
 		// 팝업매뉴
 		jpm = new JPopupMenu();
-		popItemStart = new JMenuItem("시작하기");
 		popItemPay = new JMenuItem("종료하기");
 		popItemCharge = new JMenuItem("충전하기");
 		popItemChat = new JMenuItem("채팅하기");
 		popItemName = new JMenuItem("야임마");
 		jpm.add(popItemName);
 		jpm.addSeparator();
-		jpm.add(popItemStart);
 		jpm.add(popItemPay);
 		jpm.add(popItemCharge);
 		jpm.add(popItemChat);
 
 		popItemPay.addActionListener(actionHandler);
-		popItemStart.addActionListener(actionHandler);
 
 		// 라벨 배열을 이용하여 이미지 아이콘 삽입 + 배경색지정 + 마우스 리스너 추가
 		int num = 0;
@@ -298,28 +304,6 @@ public class FrameServer extends JFrame {
 			Object obj = e.getSource();
 
 			// 팝업매뉴
-			// 팝업에 PC시작을 누르면
-			if (obj.equals(popItemStart)) {
-				// 선택한 pc번호로 라벨의 아이콘을 가져와 아이콘 배열과 비교, 켜져있는지 꺼져있는지 판단
-				// (ex) 1번 피씨 lbLaptop[0] 1번 실행중인 아이콘 배열 imgLaptopR[0] / 1번 꺼져있는
-				// 아이콘 배열 imgLaptopS[0]
-				jpm.setVisible(false); // 팝업매뉴 꺼져라
-				if (imgLaptopR[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
-					System.out.println(currentPcNumber + "번 PC가 이미 실행 중입니다.");
-					String message = (currentPcNumber + 1) + "번 PC가 이미 실행 중입니다.";
-					// 알림 다이얼로그 출력
-					JOptionPane.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
-					currentPcNumber = -1;
-				} else if (imgLaptopS[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
-					System.out.println(currentPcNumber + 1 + "번 PC시작");
-					// 시작 아이콘으로 변경
-					lbLaptop[currentPcNumber].setIcon(imgLaptopR[currentPcNumber]);
-					pcMessage = (currentPcNumber + 1) + "가 실행중";
-					lbLaptop[currentPcNumber].setMessageLine1(pcMessage);
-					currentPcNumber = -1;
-				}
-			}
-
 			// 팝업정산버튼
 			if (obj.equals(popItemPay)) {
 				if (imgLaptopR[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
@@ -328,6 +312,9 @@ public class FrameServer extends JFrame {
 					int result = JOptionPane.showConfirmDialog(null, dialogMessage, "알림", JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.YES_OPTION) {
 						System.out.println(currentPcNumber + 1 + "번 PC종료");
+						sendMessageToClient();
+						// 컴퓨터 끄라고 신호보냄
+						// 끄겠다고 신호받음
 						lbLaptop[currentPcNumber].setIcon(imgLaptopS[currentPcNumber]);
 						pcMessage = "";
 						lbLaptop[currentPcNumber].setMessageLine1(pcMessage);
@@ -344,7 +331,6 @@ public class FrameServer extends JFrame {
 			}
 
 			// 팝업매뉴 끝
-
 			// 기본 매뉴 종료 버튼
 			if (obj.equals(itemBasicExit)) {
 				int result = JOptionPane.showConfirmDialog(null, "종료하시겠습니까?", "알림", JOptionPane.YES_NO_OPTION);
@@ -356,9 +342,10 @@ public class FrameServer extends JFrame {
 	}
 
 	// 프레임이 켜짐과 동시에 켜지는 멀티 서버
-	public class ObjectMultiServer extends Thread {
+	class ObjectMultiServer extends Thread {
 		// 클라이언트들을 하나씩 담긔
 		ArrayList<ObjectServer> objClientList;
+		ServerSocket ss;
 
 		// 여러인원이 접속할 수 있도록 while문이 계속 돌아가므로 Thread를 준다.
 		@Override
@@ -366,7 +353,7 @@ public class FrameServer extends JFrame {
 			// ArrayList 초기화
 			objClientList = new ArrayList<ObjectServer>();
 			try {
-				ServerSocket ss = new ServerSocket(5000);
+				ss = new ServerSocket(5000);
 				// 계속 돌아가면서 클라이언트들을 받는다.
 				while (true) {
 					System.out.println("Object Server 접속 대기중 ...");
@@ -378,6 +365,15 @@ public class FrameServer extends JFrame {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} finally {
+				try {
+					if (ss != null)
+						ss.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 		}
 
@@ -385,9 +381,6 @@ public class FrameServer extends JFrame {
 		class ObjectServer extends Thread {
 			Socket socketClient;
 			ObjectInputStream ois;
-			ObjectOutputStream oos;
-			OutputStreamWriter osw;
-			BufferedWriter bw;
 			PrintWriter pw;
 			Object messageObject;
 			InetAddress inet;
@@ -409,21 +402,21 @@ public class FrameServer extends JFrame {
 				try {
 					// Object를 주고받는 스트림 연결
 					ois = new ObjectInputStream(socketClient.getInputStream());
-					oos = new ObjectOutputStream(socketClient.getOutputStream());
 					pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream())));
 
+					
+					System.out.println("object 받기전");
 					// 보낸 Object를 읽는다.
 					messageObject = ois.readObject();
 					System.out.println("받은 Object : " + messageObject); // 확인할겸
 																		// 받은거
 																		// 출력해보자
 
-					// objectIs method를 통해 해당 Object가 어떤 클래스를 담은건지 파악하여 담는다.
-					String objectIs = objectIs(messageObject.toString());
+					System.out.println("object 받은후");
+					// signalIs method를 통해 해당 Object가 어떤 클래스를 담은건지 파악하여 담는다.
+					String objectIs = SignalDetector.signalIs(messageObject.toString());
 					System.out.println(objectIs);
 
-					// ***수정하긔
-					// 만약 TestObject에서 온거라면
 					if (objectIs.equals("Member")) {
 						// 맴버를 받았다고 알려주자
 						pw.println("member");
@@ -441,6 +434,10 @@ public class FrameServer extends JFrame {
 					try {
 						if (socketClient != null)
 							socketClient.close();
+						if (ois != null)
+							ois.close();
+						if (pw != null)
+							pw.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -451,52 +448,88 @@ public class FrameServer extends JFrame {
 
 		// 클라이언트에게 받은 오브젝트는 무슨 클래스에서 만들어졌는가 판단
 		// object.toString 문자열에서 .과 @의 문자를 추출하여 판단 (ex. server.Member@~~~~)
-		public String objectIs(String tag) {
-			int dot = tag.indexOf('.');
-			int sign = tag.indexOf('@');
-			return tag.substring(dot + 1, sign);
-		}
 
 		// 클라이언트와 통신하고 있는 서버 쓰레드가 member instance를 받으면 laptop아이콘에 member정보를 그린다.
 		public void takeMember(Member member) {
-			String seatNum = member.getSeatNum();
+			String seatNum = member.getSeatNumber();
 			int intSeatNum = Integer.parseInt(seatNum);
-			int arrSeatNum = intSeatNum-1;
+			int arrSeatNum = intSeatNum - 1;
 			String id = member.getId();
 			String name = member.getName();
-			int resttime = member.getResttime();
+			int resttime = member.getRestTime();
 
 			// 해당 자리번호 라벨의 아이콘 이미지가 실행중 아이콘인지 정지중 아이콘인지 판단하여 실행중/정지상태를 판단
+			// 사용자 종료
 			if (imgLaptopR[arrSeatNum].equals(lbLaptop[arrSeatNum].getIcon())) {
-				System.out.println(intSeatNum + "번 PC종료");
-				
-				//종료되면 해당 pc의 resttimer를 종료
-				resttimer[arrSeatNum].cancelTimer();
-				//종료될 때의 시간과 아이디를 가지고 memberHelper를 통해 업데이트해준다.
-				memberHelper.edit(id, resttimer[arrSeatNum].getResttime());
-				System.out.println(resttimer[arrSeatNum].getResttime()+"로 업데이트");
-				
-				pcMessage = "";
-				lbLaptop[arrSeatNum].setIcon(imgLaptopS[arrSeatNum]);
-				lbLaptop[arrSeatNum].setMessageLine1(pcMessage);
-				lbLaptop[arrSeatNum].setMessageLine2(pcMessage);
-				lbLaptop[arrSeatNum].setMessageLine3(pcMessage);
-				//메세지 라인이 3개인 이유는 글자 그리는게 한줄씩 그릴수밖에 없어서..
-				//여기에서 타이머를 끄자
-				
+				clientLogout(id, arrSeatNum);
+
+				// 사용자 시작
 			} else if (imgLaptopS[arrSeatNum].equals(lbLaptop[arrSeatNum].getIcon())) {
 				System.out.println((intSeatNum) + "번 PC시작");
 				// 시작 아이콘으로 변경
-				lbLaptop[arrSeatNum].setIcon(imgLaptopR[arrSeatNum]);
+				lbLaptop[arrSeatNum].setIcon(imgLaptopR[arrSeatNum]); // 실행
+																		// 아이콘으로
+																		// 바꾸자
 				lbLaptop[arrSeatNum].setMessageLine1(id);
 				lbLaptop[arrSeatNum].setMessageLine2(name);
-				
-				//여기에 타이머를 실행시키자
-				resttimer[arrSeatNum].setResttime(resttime);
+
+				// 타이머를 실행시키자
+				resttimer[arrSeatNum].setId(id); // 사용자 아이디 설정 ... 강제종료시 쓰인다.
+				resttimer[arrSeatNum].setResttime(resttime); // 사용자 남은시간 설정
 				resttimer[arrSeatNum].start(lbLaptop[arrSeatNum]);
 			}
 		}
 	}
+
+	private void sendMessageToClient() {
+		// 자리번호, 아이피를 받아와야 한다.
+		// 아이피=>접속
+		// 자리번호=>resttimer종료와 db기록을 위함
+		try {
+			socketToClient = new Socket("169.254.55.75", 6000);
+			System.out.println(socketToClient);
+			bw = new BufferedWriter(new OutputStreamWriter(socketToClient.getOutputStream()));
+			br = new BufferedReader(new InputStreamReader(socketToClient.getInputStream()));
+			bw.write("shutdown@해라");
+			bw.flush();
+			System.out.println("Server : 메세지 전송 후");
+			
+			while ((signal = br.readLine()) != null) {
+				System.out.println("신호받음" + signal);
+			}
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			try {
+				if(socketToClient!=null)socketToClient.close();
+				if(bw!=null)bw.close();
+				if(br!=null)br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void clientLogout(String id, int arrSeatNum) {
+		System.out.println((arrSeatNum + 1) + "번 PC종료");
+
+		// 종료되면 해당 pc의 resttimer를 종료
+		resttimer[arrSeatNum].cancelTimer();
+		// 종료될 때의 시간과 아이디를 가지고 memberHelper를 통해 DB에 업데이트해준다.
+//		memberHelper.edit(id, resttimer[arrSeatNum].getResttime());
+
+		pcMessage = "";
+		lbLaptop[arrSeatNum].setIcon(imgLaptopS[arrSeatNum]);
+		lbLaptop[arrSeatNum].setMessageLine1(pcMessage);
+		lbLaptop[arrSeatNum].setMessageLine2(pcMessage);
+		lbLaptop[arrSeatNum].setMessageLine3(pcMessage);
+	}
+
 
 	public static void main(String[] args) {
 		new FrameServer();

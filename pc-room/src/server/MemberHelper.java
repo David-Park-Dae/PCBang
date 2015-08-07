@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import util.DBConnection;
+
 public class MemberHelper {
 	private int no;
 	private String name;
@@ -30,7 +32,7 @@ public class MemberHelper {
 
 	public void search(String keyword) {
 		model.setNumRows(0);
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		System.out.println("키워드받아옴  : " + keyword);
 		sql = new StringBuffer();
 		sql.append("select mb_name, mb_id, mb_resttime ");
@@ -79,7 +81,7 @@ public class MemberHelper {
 
 	public void searchById(String id) {
 		model.setNumRows(0);
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		System.out.println("키워드받아옴  : " + id);
 		sql = new StringBuffer();
 		sql.append("select mb_name, mb_id, mb_resttime ");
@@ -120,7 +122,7 @@ public class MemberHelper {
 	}
 
 	public void delete(String id) {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		sql = new StringBuffer();
 		sql.append("delete from member ");
 		sql.append("where mb_id=?");
@@ -148,7 +150,7 @@ public class MemberHelper {
 	}
 
 	public void edit(String editName, String editId, String beforeId) {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		sql = new StringBuffer();
 		sql.append("update member ");
 		sql.append("set mb_name=?, ");
@@ -181,7 +183,7 @@ public class MemberHelper {
 	}
 	
 	public void edit(String id, int resttime) {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		sql = new StringBuffer();
 		sql.append("update member ");
 		sql.append("set mb_resttime=? ");
@@ -210,7 +212,7 @@ public class MemberHelper {
 	}
 
 	public void charge(int chargeTime, String id) {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		sql = new StringBuffer();
 		sql.append("update member ");
 		sql.append("set mb_resttime=?+ ");

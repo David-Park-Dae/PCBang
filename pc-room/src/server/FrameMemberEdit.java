@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import util.DBConnection;
 import util.SetFrameDisplay;
 
 class FrameMemberEdit extends JFrame implements ActionListener, KeyListener {
@@ -144,7 +145,7 @@ class FrameMemberEdit extends JFrame implements ActionListener, KeyListener {
 	}
 
 	private void checkId() {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 
 		sql = new StringBuffer();
 		sql.append("select mb_id from member ");

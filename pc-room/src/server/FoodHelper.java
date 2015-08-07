@@ -9,6 +9,8 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import util.DBConnection;
+
 public class FoodHelper {
 	DefaultTableModel model;
 	Connection conn;
@@ -26,7 +28,7 @@ public class FoodHelper {
 
 	public void search(String keyword) {
 		model.setNumRows(0);
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		System.out.println("키워드받아옴  : " + keyword);
 		sql = new StringBuffer();
 		sql.append("select fd_no, fd_name, fd_stock ");
@@ -75,7 +77,7 @@ public class FoodHelper {
 
 	public void searchNo(int no) {
 		model.setNumRows(0);
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		System.out.println("번호받아옴  : " + no);
 		sql = new StringBuffer();
 		sql.append("select fd_no, fd_name, fd_stock ");
@@ -115,7 +117,7 @@ public class FoodHelper {
 	}
 
 	public void sell(int no, int quantity) {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		System.out.println("번호받아옴  : " + no);
 		sql = new StringBuffer();
 		sql.append("update food ");
@@ -147,7 +149,7 @@ public class FoodHelper {
 	}
 
 	public void add(String name, int stock) {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		sql = new StringBuffer();
 		sql.append("insert into food ");
 		sql.append("values(food_no.nextval, ?, ?)");
@@ -176,7 +178,7 @@ public class FoodHelper {
 	}
 
 	public void edit(String editName, int editStock, String beforeName) {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		sql = new StringBuffer();
 		sql.append("update food ");
 		sql.append("set fd_name=?, ");
@@ -209,7 +211,7 @@ public class FoodHelper {
 	}
 
 	public void delete(int no) {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		sql = new StringBuffer();
 		sql.append("delete from food ");
 		sql.append("where fd_no=?");
@@ -239,7 +241,7 @@ public class FoodHelper {
 
 	public void input(String name, int quantity) {
 		System.out.println("input넘어온 값들 " +name+"  "+quantity);
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		sql = new StringBuffer();
 		sql.append("update food ");
 		sql.append("set fd_stock=");
@@ -271,7 +273,7 @@ public class FoodHelper {
 	}
 
 	public Vector getNameArray() {
-		conn = MakeConnection.getConnection();
+		conn = DBConnection.getConnection();
 		Vector<String> nameList = null;
 		sql = new StringBuffer();
 		sql.append("select fd_name ");
