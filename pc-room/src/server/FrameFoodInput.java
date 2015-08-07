@@ -44,9 +44,9 @@ public class FrameFoodInput extends JFrame implements ActionListener {
 	JButton btnInputConfirm;
 	JButton btnInputCancel;
 
-	Food food;
+	FoodHelper food;
 
-	public FrameFoodInput(Food food) {
+	public FrameFoodInput(FoodHelper food) {
 		this.food = food;
 		setTitle("음식입고");
 		setSize(300, 150);

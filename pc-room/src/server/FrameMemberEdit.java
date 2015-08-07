@@ -46,9 +46,9 @@ class FrameMemberEdit extends JFrame implements ActionListener, KeyListener {
 	JButton btnEditCancel;
 	JButton btnEditResetPwd;
 
-	Member member;
+	MemberHelper member;
 
-	public FrameMemberEdit(String name, String id, Member member) {
+	public FrameMemberEdit(String name, String id, MemberHelper member) {
 		this.member = member;
 		beforeId = id;
 		setTitle("회원정보수정");
