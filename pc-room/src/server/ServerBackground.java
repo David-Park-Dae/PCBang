@@ -21,10 +21,16 @@ public class ServerBackground implements Runnable {
 	public  int    chkFlag;
 	
 	/** 사용자의 정보를 저장하는 맵 */
-	private Map<String, DataOutputStream> clientsServerMap 	= new HashMap<String, DataOutputStream>();
-	
 	private Map<String, DataOutputStream> clientsMap 		= new HashMap<String, DataOutputStream>();
 	private Map<String, DataOutputStream> serversMap 		= new HashMap<String, DataOutputStream>();
+	private Map<String, ServerChatGui>	  serversGuiMap 	= new HashMap<String, ServerChatGui>();
+	
+	public void setServersGuiVisible(String seatNumber,boolean flag) {		 
+		ServerChatGui scg = serversGuiMap.get(seatNumber);
+		if(scg != null) {
+			scg.setVisible(flag);
+		}
+	}
 	
 	private ServerBackground() {}
 	
@@ -37,11 +43,12 @@ public class ServerBackground implements Runnable {
 		// 1. 사용자정보가 들어갈 해쉬맵 정리
 		Collections.synchronizedMap(clientsMap);
 		Collections.synchronizedMap(serversMap);
+		Collections.synchronizedMap(serversGuiMap);
 		try {
-			serverSocket = new ServerSocket(5000);
+			serverSocket = new ServerSocket(5001);
 			// 2. 서버 초기화
 			while (true) {
-				System.out.println("채팅서버 초기화 완료.");
+				System.out.println("섭속 대기중...");
 				// 3. 접속 대기
 				socket = serverSocket.accept();
 				System.out.println(socket.getInetAddress() + "에서 접속했습니다.");
@@ -59,6 +66,7 @@ public class ServerBackground implements Runnable {
 	public void addClientChatInfo(String seatNumber, DataOutputStream out) throws IOException {
 		System.out.println(seatNumber + "저장 완료 [ 클라이언트 ]");
 		clientsMap.put(seatNumber, out);
+		System.out.println(clientsMap.get(seatNumber));
 	}
 
 	public void removeClientChatInfo(String seatNumber) {
@@ -69,6 +77,11 @@ public class ServerBackground implements Runnable {
 	public void addServerChatInfo(String seatNumber, DataOutputStream out) throws IOException {
 		System.out.println(seatNumber + "저장 완료 [ 서버 ]");
 		serversMap.put(seatNumber, out);
+	}
+	
+	public void addServerGui(String seatNumber, ServerChatGui scg) {	
+		serversGuiMap.put(seatNumber,scg);
+		System.out.println("serversGuiMap : " + serversGuiMap.get(seatNumber));
 	}
 
 	public void removeServerChatInfo(String seatNumber) {
@@ -110,27 +123,23 @@ public class ServerBackground implements Runnable {
 			
 			String seatNumberBody = seatNumber.substring(2);
 			System.out.println("seatNumberBody : "+seatNumberBody);
-			
-			DataOutputStream chkClient = clientsMap.get(seatNumberBody);
-			DataOutputStream chkServer = serversMap.get(seatNumberBody);
+
 			
 			// 클라이언트가 로그인 하자마자 채팅서버 설정
 			if(seatNumberHead.equals("CS")) {
+				System.out.println("CS 연결 여부 : "+seatNumberBody+", "+out);
 				addClientChatInfo(seatNumberBody,out);
+				ServerChatGui scg = new ServerChatGui(seatNumberBody);
+				addServerGui(seatNumberBody,scg);
 			}
 
-			if(seatNumberHead.equals("CN")) {
-				if(chkServer == null) {
-					new ServerChatGui(seatNumberBody);
-				}
-			} else if(seatNumberHead.equals("SN")) {
-				if(chkServer == null) {
-					addServerChatInfo(seatNumberBody, out);
-					clientsMap.get(seatNumberBody).writeUTF("New");
-				}
+			if(seatNumberHead.equals("SN")) {	
+				addServerChatInfo(seatNumberBody, out);
+				clientsMap.get(seatNumberBody).writeUTF("New\n");
 			}
 		}
 
+		@Override
 		public void run() {
 			try {// 받은 메세지를 서버 채팅 클라이언트와 사용자 클라이언트에 표시
 				while (in != null) {

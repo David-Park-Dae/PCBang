@@ -18,7 +18,7 @@ public class ClientChatGui  extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JTextArea jta = new JTextArea(40, 25);
 	private JTextField jtf = new JTextField(25);
-	private ClientBackground client = new ClientBackground();
+	private ClientBackground client = ClientBackground.getInstance();
 	public String seatNumber;
 	
 	public ClientChatGui(String seatNumber) throws IOException {
@@ -37,10 +37,10 @@ public class ClientChatGui  extends JFrame implements ActionListener{
 		});
 		
 		setBounds(800, 100, 400, 600);
-		setVisible(true);
+		setVisible(false);
 		
 		client.setGui(this);
-		client.setSeatNumber(seatNumber);
+		client.connet(seatNumber);
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public class ServerChatGui extends JFrame implements ActionListener {
 			}
 		});
 		
-		setVisible(true);
+		setVisible(false);
 		setBounds(200, 100, 400, 600);
 
 		server.setGui(this);

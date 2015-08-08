@@ -16,12 +16,22 @@ public class ClientBackground implements Runnable {
 	private ClientChatGui	 	gui = null;
 	private String 				msg;
 	private String 				seatNumber;
+	
+	private static ClientBackground 	clientBackground = new ClientBackground();
+	
+	private ClientBackground() {}
+	
+	public static ClientBackground getInstance() {
+		if(clientBackground == null) clientBackground = new ClientBackground();
+		return clientBackground;
+	}
 
 	public final void setGui(ClientChatGui gui) {
 		this.gui = gui;
 	}
 
-	public void connet() {
+	public void connet(String seatNumber) {
+		this.seatNumber = seatNumber;
 		thread = new Thread(this);
 		thread.start();
 	}
@@ -35,16 +45,11 @@ public class ClientBackground implements Runnable {
 		}
 	}
 
-	public void setSeatNumber(String seatNumber) throws IOException {
-		this.seatNumber = seatNumber;
-		out.writeUTF("CN"+this.seatNumber);
-	}
-
 	@Override
 	public void run() {
 		try {
-			socket = new Socket(SERVER_IP, 5000);
-			
+			socket = new Socket(SERVER_IP, 5001);
+			System.out.println("서버와 채팅서버 연결 완료 구동중 ...");
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
 			
@@ -53,11 +58,11 @@ public class ClientBackground implements Runnable {
 			while(in!=null){
 				msg=in.readUTF();
 				System.out.println(msg);
-				
-				if(gui == null && msg.equals("New")) {
-					new ClientChatGui(seatNumber);
-				} else if(gui != null) {
+				if(msg.equals("New\n")) {
 					gui.appendMsg(msg);
+				} else {
+					gui.appendMsg(msg);
+					gui.setVisible(true);
 				}
 			}
 		} catch (IOException e) {

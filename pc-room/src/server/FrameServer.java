@@ -41,6 +41,8 @@ public class FrameServer extends JFrame {
 
 	public static int PC_TOTAL = 25; // 컴퓨터의 총 갯수
 	public static int PC_AVAILABLE = 0; // 현재 사용가능한 PC갯수
+	
+	private ServerBackground sb = ServerBackground.getInstance();
 	MemberHelper memberHelper;
 
 	// Pc지정시 팝업매뉴 액션 리스너에게 번호를 전달할 놈
@@ -214,7 +216,8 @@ public class FrameServer extends JFrame {
 		jpm.add(popItemPay);
 		jpm.add(popItemCharge);
 		jpm.add(popItemChat);
-
+		
+		popItemChat.addActionListener(actionHandler);
 		popItemPay.addActionListener(actionHandler);
 		popItemStart.addActionListener(actionHandler);
 
@@ -348,6 +351,20 @@ public class FrameServer extends JFrame {
 					System.out.println(currentPcNumber + "번 PC는 실행 중이 아닙니다.");
 					String message = (currentPcNumber + 1) + "번 PC는 실행 중이 아닙니다.";
 					JOptionPane.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
+					currentPcNumber = -1;
+				}
+			}
+			
+			// 채팅GUI 버튼
+			if(obj.equals(popItemChat)) {
+				jpm.setVisible(false); // 팝업매뉴 꺼져라
+				if (imgLaptopR[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
+					String seatNumber = Integer.toString(currentPcNumber+1);
+					if(currentPcNumber < 10) seatNumber = "0"+seatNumber;
+					sb.setServersGuiVisible(seatNumber, true);
+					currentPcNumber = -1;
+				} else if (imgLaptopS[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
+					JOptionPane.showMessageDialog(null, "현재 피시와 연결이 불가합니다.");
 					currentPcNumber = -1;
 				}
 			}

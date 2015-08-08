@@ -1,5 +1,6 @@
 package util;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,7 +49,12 @@ public class SqlUtil {
 					if(loginUser.getRestTime() == 0) {
 						JOptionPane.showMessageDialog(null, "충전 후 이용해주세요.");
 					} else {
-						new MainFrame(loginUser);	// 유저정보를 메인 프레임에 넘긴다. ( 서버한테도 보내야함 )
+						try {
+							new MainFrame(loginUser);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	// 유저정보를 메인 프레임에 넘긴다. ( 서버한테도 보내야함 )
 						lf.dispose();	// 로그인프레임 종료 시킨다.
 					}
 				} else { // 패스워드가 맞지 않을 경우

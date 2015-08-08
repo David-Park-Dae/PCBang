@@ -23,7 +23,6 @@ public class MainFrame extends JFrame {
 	
 	public 	ConnectMember 	  loginUser     = null;
 	public 	ClientChatGui	  clientChatGui = null;
-	private ClientBackground  client 		= new ClientBackground();
 	
 	private JPanel			  pTopBar;
 	private JLabel 			  lbBarLogo;
@@ -42,7 +41,7 @@ public class MainFrame extends JFrame {
 	private JButton 		  btnMessage;
 	private JButton 	  	  btnExit;
 	
-	public MainFrame(ConnectMember loginUser) {
+	public MainFrame(ConnectMember loginUser) throws IOException {
 		setTitle("PC방 클라이언트");
 		setLayout(null);
 		setBounds(SetFrameDisplay.DISPLAY_WIDTH-CLIENT_DISPLAY_WIDTH, 25, CLIENT_DISPLAY_WIDTH, CLIENT_DISPLAY_HEIGHT);
@@ -134,14 +133,9 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 서버에 메세지 프레임 표시
-				if(clientChatGui == null) {
+				if(clientChatGui.isVisible() == false ) {
 					System.out.println("메세지 호출 : "+loginUser.getSeatNumber());
-					try {
-						clientChatGui = new ClientChatGui(loginUser.getSeatNumber());
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					clientChatGui.setVisible(true);
 				}
 			}
 		});
@@ -171,7 +165,7 @@ public class MainFrame extends JFrame {
 		add(pContent);
 	}
 	
-	void initConnectServer() {
-		client.connet();
+	void initConnectServer() throws IOException {
+		clientChatGui = new ClientChatGui(loginUser.getSeatNumber());
 	}
 }

@@ -42,16 +42,17 @@ public class ServerClientBackground implements Runnable{
 	@Override
 	public void run() {
 		try {
-			socket = new Socket(SERVER_IP, 5000);
-			System.out.println("[Server Client ("+seatNumber+") ] : 서버 연결됨.");
+			socket = new Socket(SERVER_IP, 5001);
+			System.out.println("[Server Client ("+this.seatNumber+") ] : 서버 연결됨.");
 			
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
 			
-			out.writeUTF("SN"+seatNumber);
+			out.writeUTF("SN"+this.seatNumber);
 			while(in!=null){
 				msg=in.readUTF();
 				System.out.println(msg);
+				gui.setVisible(true);
 				gui.appendMsg(msg);				
 			}
 		} catch (IOException e) {
