@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
@@ -25,6 +26,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -34,8 +36,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 import client.Member;
+import util.MoneyConverter;
 import util.PLabel;
 import util.Resttimer;
 import util.SetFrameDisplay;
@@ -74,7 +78,6 @@ public class FrameServer extends JFrame {
 
 	// 컴퓨터 라벨과 배열
 	JLabel[] lbBlank;
-
 	PLabel[] lbLaptop;
 
 	// 우클릭시 팝업 이미지
@@ -92,9 +95,11 @@ public class FrameServer extends JFrame {
 
 	// 서버에서 클라이언트로 메세지를 보내기위한 변수들
 	Socket socketToClient;
-	BufferedWriter bw;
+	PrintWriter pw;
 	BufferedReader br;
-	String signal;
+	String returnSignal;
+
+	ActionHandler actionHandler;
 
 	public FrameServer() {
 		setTitle("관리자 프로그램");
@@ -126,7 +131,7 @@ public class FrameServer extends JFrame {
 
 		// 핸들러들 생성
 		MouseHandler mouseHandler = new MouseHandler();
-		ActionHandler actionHandler = new ActionHandler();
+		actionHandler = new ActionHandler();
 
 		// 초기화
 		pLines = new JPanel[5];
@@ -222,6 +227,7 @@ public class FrameServer extends JFrame {
 		jpm.add(popItemChat);
 
 		popItemPay.addActionListener(actionHandler);
+		popItemCharge.addActionListener(actionHandler);
 
 		// 라벨 배열을 이용하여 이미지 아이콘 삽입 + 배경색지정 + 마우스 리스너 추가
 		int num = 0;
@@ -243,6 +249,101 @@ public class FrameServer extends JFrame {
 		}
 
 		setVisible(true);
+	}
+
+	//팝업매뉴 충전하기를 누르면 뜨는 창, 돈을 입력하면 시간으로 환산하여 resttimer에 추가해준다.
+	class FrameCharge extends JFrame implements ActionListener {
+		JPanel plChargeLine1;
+		JPanel plChargeLine2;
+
+		JLabel lbCharge;
+		JLabel lbWon;
+		JTextField tfCharge;
+		JButton btnCharge;
+		JButton btnCancel;
+
+		public FrameCharge() {
+			setTitle(currentPcNumber + "번 충전금액입력");
+			setSize(300, 120);
+			SetFrameDisplay.setFrameCenter(this);
+			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+			setLayout(new GridLayout(2, 1));
+
+			plChargeLine1 = new JPanel();
+			plChargeLine2 = new JPanel();
+
+			lbCharge = new JLabel("충전할 금액 : ");
+			lbWon = new JLabel("원");
+			tfCharge = new JTextField(6);
+			btnCharge = new JButton("충전");
+			btnCancel = new JButton("취소");
+
+			tfCharge.addKeyListener(new KeyAdapter() {
+				public void keyTyped(java.awt.event.KeyEvent e) {
+					char c = e.getKeyChar();
+					if (!Character.isDigit(c)) {
+						e.consume();
+						return;
+					}
+				}
+			});
+			btnCharge.addActionListener(this);
+			btnCancel.addActionListener(this);
+
+			plChargeLine1.add(lbCharge);
+			plChargeLine1.add(tfCharge);
+			plChargeLine1.add(lbWon);
+			plChargeLine2.add(btnCharge);
+			plChargeLine2.add(btnCancel);
+
+			add(plChargeLine1);
+			add(plChargeLine2);
+
+			setVisible(true);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			Object obj = new Object();
+			obj = e.getSource();
+			
+			//충전하기 버튼을 누르면
+			if (obj.equals(btnCharge)) {
+				
+				int intChargeMoney = Integer.parseInt(tfCharge.getText());
+				if (intChargeMoney > 0) {
+					String dialogMessage = (currentPcNumber + 1) + "번 PC를 충전하시겠습니까?";
+					
+					int result = JOptionPane.showConfirmDialog(null, dialogMessage, "알림", JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						System.out.println(currentPcNumber + 1 + "번 PC충전");
+						System.out.println("charge@"+tfCharge.getText());
+						sendMessageToClient("charge@"+tfCharge.getText());
+						// 충전하라고 신호보냄
+						System.out.println("charger : returnSignal : " + returnSignal);
+						if (returnSignal.equals("executeCharge")) {
+							int chargeTime = MoneyConverter.basicConvert(intChargeMoney);
+							System.out.println("충전한시간 "+chargeTime);
+							resttimer[currentPcNumber].setResttime(resttimer[currentPcNumber].getResttime()+chargeTime);
+							currentPcNumber = -1;
+							returnSignal = "";
+							JOptionPane.showMessageDialog(null, "충전이 완료되었습니다", "알림", JOptionPane.INFORMATION_MESSAGE);
+							this.dispose();
+						}
+					}
+				}else{
+					JOptionPane.showMessageDialog(null, "금액을 입력하여 주새요", "알림", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+
+			if (obj.equals(btnCancel))
+
+			{
+				this.dispose();
+			}
+		}
 	}
 
 	class MouseHandler implements MouseListener {
@@ -303,7 +404,7 @@ public class FrameServer extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			Object obj = e.getSource();
 
-			// 팝업매뉴
+			// 팝업매뉴시작
 			// 팝업정산버튼
 			if (obj.equals(popItemPay)) {
 				if (imgLaptopR[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
@@ -312,13 +413,15 @@ public class FrameServer extends JFrame {
 					int result = JOptionPane.showConfirmDialog(null, dialogMessage, "알림", JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.YES_OPTION) {
 						System.out.println(currentPcNumber + 1 + "번 PC종료");
-						sendMessageToClient();
+						sendMessageToClient("shutdown@");
 						// 컴퓨터 끄라고 신호보냄
 						// 끄겠다고 신호받음
-						lbLaptop[currentPcNumber].setIcon(imgLaptopS[currentPcNumber]);
-						pcMessage = "";
-						lbLaptop[currentPcNumber].setMessageLine1(pcMessage);
-						currentPcNumber = -1;
+						System.out.println("returnSignal : " + returnSignal);
+						if (returnSignal.equals("executeShutdown")) {
+							clientLogout(currentPcNumber);
+							currentPcNumber = -1;
+							returnSignal = "";
+						}
 					}
 					currentPcNumber = -1;
 				} else {
@@ -327,6 +430,18 @@ public class FrameServer extends JFrame {
 					String message = (currentPcNumber + 1) + "번 PC는 실행 중이 아닙니다.";
 					JOptionPane.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
 					currentPcNumber = -1;
+				}
+			}
+
+			if (obj.equals(popItemCharge)) {
+				if (imgLaptopR[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
+					jpm.setVisible(false);
+					new FrameCharge();
+				} else {
+					jpm.setVisible(false);
+					System.out.println(currentPcNumber + "번 PC는 실행 중이 아닙니다.");
+					String message = (currentPcNumber + 1) + "번 PC는 실행 중이 아닙니다.";
+					JOptionPane.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 
@@ -404,17 +519,14 @@ public class FrameServer extends JFrame {
 					ois = new ObjectInputStream(socketClient.getInputStream());
 					pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream())));
 
-					
-					System.out.println("object 받기전");
 					// 보낸 Object를 읽는다.
 					messageObject = ois.readObject();
 					System.out.println("받은 Object : " + messageObject); // 확인할겸
 																		// 받은거
 																		// 출력해보자
 
-					System.out.println("object 받은후");
 					// signalIs method를 통해 해당 Object가 어떤 클래스를 담은건지 파악하여 담는다.
-					String objectIs = SignalDetector.signalIs(messageObject.toString());
+					String objectIs = SignalDetector.objectIs(messageObject.toString());
 					System.out.println(objectIs);
 
 					if (objectIs.equals("Member")) {
@@ -461,7 +573,7 @@ public class FrameServer extends JFrame {
 			// 해당 자리번호 라벨의 아이콘 이미지가 실행중 아이콘인지 정지중 아이콘인지 판단하여 실행중/정지상태를 판단
 			// 사용자 종료
 			if (imgLaptopR[arrSeatNum].equals(lbLaptop[arrSeatNum].getIcon())) {
-				clientLogout(id, arrSeatNum);
+				clientLogout(arrSeatNum);
 
 				// 사용자 시작
 			} else if (imgLaptopS[arrSeatNum].equals(lbLaptop[arrSeatNum].getIcon())) {
@@ -474,40 +586,43 @@ public class FrameServer extends JFrame {
 				lbLaptop[arrSeatNum].setMessageLine2(name);
 
 				// 타이머를 실행시키자
-				resttimer[arrSeatNum].setId(id); // 사용자 아이디 설정 ... 강제종료시 쓰인다.
 				resttimer[arrSeatNum].setResttime(resttime); // 사용자 남은시간 설정
 				resttimer[arrSeatNum].start(lbLaptop[arrSeatNum]);
 			}
 		}
 	}
 
-	private void sendMessageToClient() {
-		// 자리번호, 아이피를 받아와야 한다.
-		// 아이피=>접속
-		// 자리번호=>resttimer종료와 db기록을 위함
+	//충전과 강제종료 신호를 보낸다.
+	private void sendMessageToClient(String order) {
+		//order 는 shutdown@ 과 charge@충전금액 두종류
+		
+		System.out.println("order : " + order);
 		try {
-			socketToClient = new Socket("169.254.55.75", 6000);
+			socketToClient = new Socket("169.254.55.75", 6000); //클라이언트 서버에 연결
 			System.out.println(socketToClient);
-			bw = new BufferedWriter(new OutputStreamWriter(socketToClient.getOutputStream()));
+			pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketToClient.getOutputStream())));
 			br = new BufferedReader(new InputStreamReader(socketToClient.getInputStream()));
-			bw.write("shutdown@해라");
-			bw.flush();
-			System.out.println("Server : 메세지 전송 후");
-			
-			while ((signal = br.readLine()) != null) {
-				System.out.println("신호받음" + signal);
-			}
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			pw.println(order); // order를 전송
+			pw.flush();
+
+			returnSignal = br.readLine(); //전송 후 잘 받았는지 응답 메세지 받음
+			System.out.println("리턴신호 : " + returnSignal); 
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "클라이언트 서버 오류", "알림", JOptionPane.INFORMATION_MESSAGE);
 			e.printStackTrace();
-		}finally{
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
 			try {
-				if(socketToClient!=null)socketToClient.close();
-				if(bw!=null)bw.close();
-				if(br!=null)br.close();
+				if (socketToClient != null)
+					socketToClient.close();
+				if (pw != null)
+					pw.close();
+				if (br != null)
+					br.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -515,13 +630,13 @@ public class FrameServer extends JFrame {
 		}
 	}
 
-	private void clientLogout(String id, int arrSeatNum) {
+	private void clientLogout(int arrSeatNum) {
 		System.out.println((arrSeatNum + 1) + "번 PC종료");
 
 		// 종료되면 해당 pc의 resttimer를 종료
 		resttimer[arrSeatNum].cancelTimer();
 		// 종료될 때의 시간과 아이디를 가지고 memberHelper를 통해 DB에 업데이트해준다.
-//		memberHelper.edit(id, resttimer[arrSeatNum].getResttime());
+		// memberHelper.edit(id, resttimer[arrSeatNum].getResttime());
 
 		pcMessage = "";
 		lbLaptop[arrSeatNum].setIcon(imgLaptopS[arrSeatNum]);
@@ -529,7 +644,6 @@ public class FrameServer extends JFrame {
 		lbLaptop[arrSeatNum].setMessageLine2(pcMessage);
 		lbLaptop[arrSeatNum].setMessageLine3(pcMessage);
 	}
-
 
 	public static void main(String[] args) {
 		new FrameServer();

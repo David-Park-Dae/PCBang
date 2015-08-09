@@ -34,12 +34,15 @@ public class FrameFoodAdd extends JFrame implements ActionListener, KeyListener 
 	JPanel plAddLine1;
 	JPanel plAddLine2;
 	JPanel plAddLine3;
+	JPanel plAddLine4;
 
 	JLabel lbAddName;
 	JLabel lbAddStock;
+	JLabel lbAddPrice;
 
 	JTextField tfAddName;
 	JTextField tfAddStock;
+	JTextField tfAddPrice;
 
 	JButton btnAddConfirm;
 	JButton btnAddCancel;
@@ -49,7 +52,7 @@ public class FrameFoodAdd extends JFrame implements ActionListener, KeyListener 
 	public FrameFoodAdd(FoodHelper food) {
 		this.food = food;
 		setTitle("음식추가");
-		setSize(300, 150);
+		setSize(300, 180);
 		SetFrameDisplay.setFrameCenter(this);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -57,15 +60,27 @@ public class FrameFoodAdd extends JFrame implements ActionListener, KeyListener 
 		plAddLine1 = new JPanel();
 		plAddLine2 = new JPanel();
 		plAddLine3 = new JPanel();
+		plAddLine4 = new JPanel();
 		lbAddName = new JLabel("이름  : ");
 		lbAddStock = new JLabel("재고 : ");
+		lbAddPrice = new JLabel("가격 : ");
 		tfAddName = new JTextField(7);
 		tfAddStock = new JTextField(7);
+		tfAddPrice = new JTextField(7);
 		btnAddConfirm = new JButton("추가");
 		btnAddCancel = new JButton("취소");
 
 		tfAddName.addKeyListener(this);
 		tfAddStock.addKeyListener(new KeyAdapter() {
+			public void keyTyped(java.awt.event.KeyEvent e) {
+				char c = e.getKeyChar();
+				if (!Character.isDigit(c)) {
+					e.consume();
+					return;
+				}
+			}
+		});
+		tfAddPrice.addKeyListener(new KeyAdapter() {
 			public void keyTyped(java.awt.event.KeyEvent e) {
 				char c = e.getKeyChar();
 				if (!Character.isDigit(c)) {
@@ -81,13 +96,16 @@ public class FrameFoodAdd extends JFrame implements ActionListener, KeyListener 
 		plAddLine1.add(tfAddName);
 		plAddLine2.add(lbAddStock);
 		plAddLine2.add(tfAddStock);
-		plAddLine3.add(btnAddConfirm);
-		plAddLine3.add(btnAddCancel);
+		plAddLine3.add(lbAddPrice);
+		plAddLine3.add(tfAddPrice);
+		plAddLine4.add(btnAddConfirm);
+		plAddLine4.add(btnAddCancel);
 
-		plAddBackground.setLayout(new GridLayout(3, 1));
+		plAddBackground.setLayout(new GridLayout(4, 1));
 		plAddBackground.add(plAddLine1);
 		plAddBackground.add(plAddLine2);
 		plAddBackground.add(plAddLine3);
+		plAddBackground.add(plAddLine4);
 		add(plAddBackground);
 
 		setVisible(true);
@@ -123,8 +141,8 @@ public class FrameFoodAdd extends JFrame implements ActionListener, KeyListener 
 		Object obj = e.getSource();
 		if (obj.equals(btnAddConfirm)) {
 			if (nameFlag == true) {
-				if(!tfAddStock.getText().equals("") && !tfAddName.getText().equals("")){
-				food.add(tfAddName.getText(), Integer.parseInt(tfAddStock.getText()));
+				if(!tfAddStock.getText().equals("") && !tfAddName.getText().equals("") && !tfAddPrice.getText().equals("")){
+				food.add(tfAddName.getText(), Integer.parseInt(tfAddStock.getText()), Integer.parseInt(tfAddPrice.getText()));
 				this.dispose();
 				}else{
 					jop.showMessageDialog(null, "값을 입력해주셔야 합니다.", "알림", JOptionPane.INFORMATION_MESSAGE);

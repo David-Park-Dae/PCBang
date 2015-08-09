@@ -49,8 +49,8 @@ public class PLabel extends JLabel{
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawString(messageLine1, 55, 50);
-		g.drawString(messageLine2, 55, 70);
+		g.drawString(messageLine1, 70, 50);
+		g.drawString(messageLine2, 70, 70);
 		g.drawString(messageLine3, 55, 90);
 	}
 }

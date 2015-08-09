@@ -5,6 +5,10 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import util.DBConnection;
 
 public class FrameLogin extends JFrame implements ActionListener {
 	Dimension d;
@@ -35,6 +41,8 @@ public class FrameLogin extends JFrame implements ActionListener {
 	JButton btnExit;
 
 	JOptionPane jop;
+
+	boolean loginFlag = false;
 
 	FrameLogin() {
 		setTitle("관리자 로그인");
@@ -92,13 +100,58 @@ public class FrameLogin extends JFrame implements ActionListener {
 		obj = e.getSource();
 
 		if (obj.equals(btnLogin)) {
-			FrameServer fs = new FrameServer();
-			dispose();
+			checkId();
+			if (loginFlag == true) {
+				FrameServer fs = new FrameServer();
+				dispose();
+			} else {
+				jop.showMessageDialog(null, "아이디와 비밀번호를 확인해주세요", "알림", JOptionPane.INFORMATION_MESSAGE);
+			}
 		}
 		if (obj.equals(btnExit)) {
 			int result = jop.showConfirmDialog(null, "종료하시겠습니까?", "알림", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				System.exit(0);
+			}
+		}
+	}
+
+	public void checkId() {
+		Connection conn = DBConnection.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuffer sql = new StringBuffer();
+		sql.append("select mg_id, mg_pwd from manager ");
+		sql.append("where mg_id=?");
+		try {
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setString(1, tfId.getText());
+			rs = pstmt.executeQuery();
+			if (rs.next() == true) {
+				String pwd = rs.getString("mg_pwd");
+				StringBuffer pwdBuffer = new StringBuffer();
+				for (char c : pfPwd.getPassword()) {
+					pwdBuffer.append(c);
+				}
+				if (pwd.equals(pwdBuffer.toString())) {
+					loginFlag = true;
+				}
+			} else {
+				loginFlag = false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (rs != null)
+					rs.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

@@ -9,6 +9,8 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 import util.DBConnection;
+import util.MoneyConverter;
+import util.Resttimer;
 
 public class MemberHelper {
 	private int no;
@@ -55,7 +57,8 @@ public class MemberHelper {
 				name = rs.getString("mb_name");
 				id = rs.getString("mb_id");
 				restTime = rs.getInt("mb_resttime");
-				String[] tableStatement = { name, id, Integer.toString(restTime) };
+				String transferedTime = Resttimer.transTime(restTime); 
+				String[] tableStatement = { name, id,  transferedTime};
 
 				for (String i : tableStatement) {
 					System.out.print(i + "  ");
@@ -97,7 +100,8 @@ public class MemberHelper {
 				name = rs.getString("mb_name");
 				id = rs.getString("mb_id");
 				restTime = rs.getInt("mb_resttime");
-				String[] tableStatement = { name, id, Integer.toString(restTime) };
+				String transferedTime = Resttimer.transTime(restTime); 
+				String[] tableStatement = { name, id, transferedTime };
 
 				for (String i : tableStatement) {
 					System.out.print(i + "  ");
@@ -211,7 +215,8 @@ public class MemberHelper {
 		}
 	}
 
-	public void charge(int chargeTime, String id) {
+	public void charge(int chargeMoney, String id) {
+		int chargeTime = MoneyConverter.basicConvert(chargeMoney);
 		conn = DBConnection.getConnection();
 		sql = new StringBuffer();
 		sql.append("update member ");

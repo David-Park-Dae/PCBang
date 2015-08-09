@@ -52,7 +52,7 @@ public class Resttimer {
 		this.id = id;
 	}
 
-	// timer 시작 메소드
+	// 서버 전용 start
 	public void start(PLabel label) {
 		this.pLabel = label;
 
@@ -67,6 +67,7 @@ public class Resttimer {
 		}, delay, period);
 	}
 
+	//클라이언트 전용 start
 	public void start(Member member, JLabel lbresttime, JLabel lbLivetime) {
 		this.jlbResttime = lbresttime;
 		this.jlbLivetime = lbLivetime;
@@ -115,7 +116,7 @@ public class Resttimer {
 	}
 
 	// resttime을 시/분 단위로 리턴해주는 메소드
-	private String transTime(int resttime) {
+	public static String transTime(int resttime) {
 		int hour = resttime / 60;
 		int min = resttime % 60;
 		String timeMessage;

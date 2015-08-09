@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.Connection;
@@ -23,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
+import util.MoneyConverter;
 import util.SetFrameDisplay;
 
 public class FrameMember extends JFrame implements ActionListener {
@@ -157,7 +159,7 @@ public class FrameMember extends JFrame implements ActionListener {
 		if (obj.equals(btnCharge)) {
 			selectedId = getSelectedId();
 			if (!selectedId.equals("-1")) {
-				member.charge(3000, selectedId);
+				new FrameCharge();
 			} else {
 				jop.showMessageDialog(null, "셀을 선택하여 주세요", "알림", JOptionPane.INFORMATION_MESSAGE);
 			}
@@ -188,6 +190,89 @@ public class FrameMember extends JFrame implements ActionListener {
 				cell[i] = "-1";
 			}
 			return cell;
+		}
+	}
+
+	class FrameCharge extends JFrame implements ActionListener {
+		JPanel plChargeLine1;
+		JPanel plChargeLine2;
+
+		JLabel lbCharge;
+		JLabel lbWon;
+		JTextField tfCharge;
+		JButton btnCharge;
+		JButton btnCancel;
+
+		public FrameCharge() {
+			setTitle(selectedId + " 충전금액입력");
+			setSize(300, 120);
+			SetFrameDisplay.setFrameCenter(this);
+			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+			setLayout(new GridLayout(2, 1));
+
+			plChargeLine1 = new JPanel();
+			plChargeLine2 = new JPanel();
+
+			lbCharge = new JLabel("충전할 금액 : ");
+			lbWon = new JLabel("원");
+			tfCharge = new JTextField(6);
+			btnCharge = new JButton("충전");
+			btnCancel = new JButton("취소");
+
+			tfCharge.addKeyListener(new KeyAdapter() {
+				public void keyTyped(java.awt.event.KeyEvent e) {
+					char c = e.getKeyChar();
+					if (!Character.isDigit(c)) {
+						e.consume();
+						return;
+					}
+				}
+			});
+			btnCharge.addActionListener(this);
+			btnCancel.addActionListener(this);
+
+			plChargeLine1.add(lbCharge);
+			plChargeLine1.add(tfCharge);
+			plChargeLine1.add(lbWon);
+			plChargeLine2.add(btnCharge);
+			plChargeLine2.add(btnCancel);
+
+			add(plChargeLine1);
+			add(plChargeLine2);
+
+			setVisible(true);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			Object obj = new Object();
+			obj = e.getSource();
+
+			// 충전하기 버튼을 누르면
+			if (obj.equals(btnCharge)) {
+
+				System.out.println("이게뭐길래:" + tfCharge.getText());
+				if (!tfCharge.getText().equals("")) {
+					int intChargeMoney = Integer.parseInt(tfCharge.getText());
+					if (intChargeMoney > 0) {
+						int result = JOptionPane.showConfirmDialog(null, "충전하시겠습니까?", "알림", JOptionPane.YES_NO_OPTION);
+						if (result == JOptionPane.YES_OPTION) {
+							System.out.println("FrameMember>>" + selectedId + ": PC충전");
+							member.charge(intChargeMoney, selectedId);
+							JOptionPane.showMessageDialog(null, "충전이 완료되었습니다", "알림", JOptionPane.INFORMATION_MESSAGE);
+							this.dispose();
+						}
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "금액을 입력하여 주새요", "알림", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+
+			if (obj.equals(btnCancel)) {
+				this.dispose();
+			}
 		}
 	}
 }

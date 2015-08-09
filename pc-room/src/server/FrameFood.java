@@ -21,7 +21,7 @@ import javax.swing.table.TableRowSorter;
 import util.SetFrameDisplay;
 
 public class FrameFood extends JFrame implements ActionListener {
-	String[] selectedCell = new String[3];
+	String[] selectedCell = new String[4];
 	String selectedNo;
 	JOptionPane jop;
 	FoodHelper food;
@@ -31,7 +31,7 @@ public class FrameFood extends JFrame implements ActionListener {
 	// Food
 	JTable tableFood;
 	DefaultTableModel modelFood;
-	String[] colFoodName = { "음식번호", "음식이름", "재고" };
+	String[] colFoodName = { "음식번호", "음식이름", "재고", "가격" };
 	String[][] rowFoodData;
 
 	JPanel plFoodBackground;
@@ -189,10 +189,9 @@ public class FrameFood extends JFrame implements ActionListener {
 		}
 
 		if (obj.equals(btnFoodEdit)) {
-
 			selectedCell = getSelectedCell();
 			if (!selectedCell[0].equals("-1")) {
-				FrameFoodEdit fme = new FrameFoodEdit(selectedCell[1], Integer.parseInt(selectedCell[2]), food);
+				FrameFoodEdit fme = new FrameFoodEdit(selectedCell[1], Integer.parseInt(selectedCell[2]), Integer.parseInt(selectedCell[3]), food);
 			} else {
 				jop.showMessageDialog(null, "셀을 선택하여 주세요", "알림", JOptionPane.INFORMATION_MESSAGE);
 			}
@@ -215,19 +214,23 @@ public class FrameFood extends JFrame implements ActionListener {
 	}
 
 	private String[] getSelectedCell() {
-		String[] cell = new String[3];
+		String[] cell = new String[4];
 		int row = tableFood.getSelectedRow();
 		int col = 0;
 		try {
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 4; i++) {
 				cell[i] = (String) tableFood.getValueAt(row, i);
 			}
 			return cell;
 		} catch (Exception e) {
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 4; i++) {
 				cell[i] = "-1";
 			}
 			return cell;
 		}
+	}
+	
+	public static void main(String[] args) {
+		new FrameFood();
 	}
 }

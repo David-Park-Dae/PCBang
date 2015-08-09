@@ -24,6 +24,8 @@ import util.SetFrameDisplay;
 
 public class FrameFoodEdit extends JFrame implements ActionListener, KeyListener {
 	String beforeName;
+	String beforeStock;
+	String beforePrice;
 	boolean nameFlag = true;
 	JOptionPane jop;
 	Connection conn;
@@ -35,23 +37,28 @@ public class FrameFoodEdit extends JFrame implements ActionListener, KeyListener
 	JPanel plAddLine1;
 	JPanel plAddLine2;
 	JPanel plAddLine3;
+	JPanel plAddLine4;
 
 	JLabel lbAddName;
 	JLabel lbAddStock;
-
+	JLabel lbAddPrice;
+	
 	JTextField tfAddName;
 	JTextField tfAddStock;
+	JTextField tfAddPrice;
 
 	JButton btnAddConfirm;
 	JButton btnAddCancel;
 	
 	FoodHelper food;
 
-	public FrameFoodEdit(String name, int stock, FoodHelper food) {
+	public FrameFoodEdit(String name, int stock, int price, FoodHelper food) {
 		this.food = food;
 		beforeName = name;
+		beforeStock = Integer.toString(stock);
+		beforePrice = Integer.toString(price);
 		setTitle("음식정보수정");
-		setSize(300, 150);
+		setSize(300, 180);
 		SetFrameDisplay.setFrameCenter(this);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -59,15 +66,28 @@ public class FrameFoodEdit extends JFrame implements ActionListener, KeyListener
 		plAddLine1 = new JPanel();
 		plAddLine2 = new JPanel();
 		plAddLine3 = new JPanel();
+		plAddLine4 = new JPanel();
+		
 		lbAddName = new JLabel("이름  : ");
 		lbAddStock = new JLabel("재고 : ");
+		lbAddPrice = new JLabel("가격 : ");
 		tfAddName = new JTextField(name, 7);
 		tfAddStock = new JTextField(Integer.toString(stock), 7);
+		tfAddPrice = new JTextField(Integer.toString(price), 7);
 		btnAddConfirm = new JButton("수정");
 		btnAddCancel = new JButton("취소");
 
 		tfAddName.addKeyListener(this);
 		tfAddStock.addKeyListener(new KeyAdapter() {
+			public void keyTyped(java.awt.event.KeyEvent e) {
+				char c = e.getKeyChar();
+				if (!Character.isDigit(c)) {
+					e.consume();
+					return;
+				}
+			}
+		});
+		tfAddPrice.addKeyListener(new KeyAdapter() {
 			public void keyTyped(java.awt.event.KeyEvent e) {
 				char c = e.getKeyChar();
 				if (!Character.isDigit(c)) {
@@ -83,13 +103,16 @@ public class FrameFoodEdit extends JFrame implements ActionListener, KeyListener
 		plAddLine1.add(tfAddName);
 		plAddLine2.add(lbAddStock);
 		plAddLine2.add(tfAddStock);
-		plAddLine3.add(btnAddConfirm);
-		plAddLine3.add(btnAddCancel);
+		plAddLine3.add(lbAddPrice);
+		plAddLine3.add(tfAddPrice);
+		plAddLine4.add(btnAddConfirm);
+		plAddLine4.add(btnAddCancel);
 
-		plAddBackground.setLayout(new GridLayout(3, 1));
+		plAddBackground.setLayout(new GridLayout(4, 1));
 		plAddBackground.add(plAddLine1);
 		plAddBackground.add(plAddLine2);
 		plAddBackground.add(plAddLine3);
+		plAddBackground.add(plAddLine4);
 		add(plAddBackground);
 
 		setVisible(true);
@@ -125,8 +148,8 @@ public class FrameFoodEdit extends JFrame implements ActionListener, KeyListener
 		Object obj = e.getSource();
 		if (obj.equals(btnAddConfirm)) {
 			if (nameFlag == true) {
-				if(!tfAddStock.getText().equals("") && !tfAddName.getText().equals("")){
-				food.edit(tfAddName.getText(), Integer.parseInt(tfAddStock.getText()), beforeName);
+				if(!tfAddStock.getText().equals("") && !tfAddName.getText().equals("") && !tfAddPrice.getText().equals("")){
+				food.edit(tfAddName.getText(), Integer.parseInt(tfAddStock.getText()), Integer.parseInt(tfAddPrice.getText()), beforeName, beforeStock, beforePrice);
 				this.dispose();
 				}else{
 					jop.showMessageDialog(null, "값을 입력해주셔야 합니다.", "알림", JOptionPane.INFORMATION_MESSAGE);
