@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import util.FoodHelper;
 import util.SetFrameDisplay;
 
 public class FrameFoodInput extends JFrame implements ActionListener {
