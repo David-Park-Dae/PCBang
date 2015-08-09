@@ -16,14 +16,14 @@ public class FoodLogWriter {
 	public static ResultSet rs = null;
 	public static PreparedStatement pstmt = null;
 
-	public static void writeLog(int fdNo, String type, String log) {
+	public static void writeLog(String fdName, String type, String log) {
 		conn = DBConnection.getConnection();
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into foodlog ");
 		sql.append("values(foodlog_no.nextval, ?, ?, sysdate, ?)");
 		try {
 			pstmt = conn.prepareStatement(sql.toString());
-			pstmt.setInt(1, fdNo);
+			pstmt.setString(1, fdName);
 			pstmt.setString(2, type);
 			pstmt.setString(3, log);
 			pstmt.executeUpdate();
@@ -56,10 +56,11 @@ public class FoodLogWriter {
 	}
 
 	public static void readLog(DefaultTableModel model) {
+		model.setNumRows(0);
 		conn = DBConnection.getConnection();
 		StringBuffer sql = new StringBuffer();
-		sql.append("select fl_date, fd_name, fl_type, fl_log, fd_stock");
-		sql.append("from food natural join foodlog");
+		sql.append("select fl_date, fl_name, fl_type, fl_log ");
+		sql.append("from foodlog");
 
 		try {
 			pstmt = conn.prepareStatement(sql.toString());
@@ -68,12 +69,11 @@ public class FoodLogWriter {
 			while (rs.next()) {
 				// jtable의 model을 매개변수로 받고 출력하자
 				String date = rs.getString("fl_date");
-				String name = rs.getString("fd_name");
+				String name = rs.getString("fl_name");
 				String type = rs.getString("fl_type");
 				String log = rs.getString("fl_log");
-				int stock = rs.getInt("fd_stock");
 
-				String[] tableStatement = { date, name, type, log, Integer.toString(stock) };
+				String[] tableStatement = { date, name, type, log};
 				model.addRow(tableStatement);
 			}
 		} catch (SQLException e) {
@@ -96,10 +96,11 @@ public class FoodLogWriter {
 	}
 
 	public static void readLogByType(DefaultTableModel model, String insertedType) {
+		model.setNumRows(0);
 		conn = DBConnection.getConnection();
 		StringBuffer sql = new StringBuffer();
-		sql.append("select fl_date, fd_name, fl_type, fl_log, fd_stock ");
-		sql.append("from food natural join foodlog ");
+		sql.append("select fl_date, fl_name, fl_type, fl_log ");
+		sql.append("from foodlog ");
 		sql.append("where fl_type = ?");
 
 		try {
@@ -110,7 +111,7 @@ public class FoodLogWriter {
 			while (rs.next()) {
 				// jtable의 model을 매개변수로 받고 출력하자
 				String date = rs.getString("fl_date");
-				String name = rs.getString("fd_name");
+				String name = rs.getString("fl_name");
 				String type = rs.getString("fl_type");
 				String log = rs.getString("fl_log");
 				int stock = rs.getInt("fd_stock");
@@ -138,16 +139,17 @@ public class FoodLogWriter {
 	}
 
 	public static void readLogByFood(DefaultTableModel model, String fdName) {
+		model.setNumRows(0);
 		conn = DBConnection.getConnection();
 		StringBuffer sql = new StringBuffer();
-		sql.append("select fl_date, fd_name, fl_type, fl_log, fd_stock ");
-		sql.append("from food natural join foodlog ");
+		sql.append("select fl_date, fl_name, fl_type, fl_log ");
+		sql.append("from foodlog ");
 		try {
 			if (fdName.equals("")) {
 				pstmt = conn.prepareStatement(sql.toString());
 				rs = pstmt.executeQuery();
 			} else {
-				sql.append("where fd_name = ?");
+				sql.append("where fl_name = ?");
 				pstmt = conn.prepareStatement(sql.toString());
 				pstmt.setString(1, fdName);
 				rs = pstmt.executeQuery();
@@ -156,12 +158,11 @@ public class FoodLogWriter {
 			while (rs.next()) {
 				// jtable의 model을 매개변수로 받고 출력하자
 				String date = rs.getString("fl_date");
-				String name = rs.getString("fd_name");
+				String name = rs.getString("fl_name");
 				String type = rs.getString("fl_type");
 				String log = rs.getString("fl_log");
-				int stock = rs.getInt("fd_stock");
 
-				String[] tableStatement = { date, name, type, log, Integer.toString(stock) };
+				String[] tableStatement = { date, name, type, log };
 				model.addRow(tableStatement);
 			}
 		} catch (SQLException e) {
@@ -183,21 +184,21 @@ public class FoodLogWriter {
 		}
 	}
 
-	public static int searchFdNo(String fdName) {
+	public static String searchFdName(int fdNo) {
 		conn = DBConnection.getConnection();
 		StringBuffer sql = new StringBuffer();
-		sql.append("select fd_no from food ");
-		sql.append("where fd_name=?");
+		sql.append("select fd_name from food ");
+		sql.append("where fd_no=?");
 
 		try {
 			pstmt = conn.prepareStatement(sql.toString());
-			pstmt.setString(1, fdName);
+			pstmt.setInt(1, fdNo);
 			rs = pstmt.executeQuery();
-			int fdNo = -1;
+			String fdName = null;
 			while (rs.next()) {
 				fdNo = rs.getInt("fd_no");
 			}
-			return fdNo;
+			return fdName;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -215,6 +216,6 @@ public class FoodLogWriter {
 				e.printStackTrace();
 			}
 		}
-		return -1;
+		return null;
 	}
 }

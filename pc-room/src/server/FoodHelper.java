@@ -123,6 +123,7 @@ public class FoodHelper {
 	}
 
 	public void sell(int no, int quantity) {
+		String fdName = FoodLogWriter.searchFdName(no);
 		conn = DBConnection.getConnection();
 		System.out.println("번호받아옴  : " + no);
 		sql = new StringBuffer();
@@ -136,7 +137,7 @@ public class FoodHelper {
 			pstmt.setInt(2, quantity);
 			pstmt.setInt(3, no);
 			pstmt.executeUpdate();
-			FoodLogWriter.writeLog(no, "판매", quantity+"개를 판매");
+			FoodLogWriter.writeLog(fdName, "판매", quantity+"개를 판매");
 			JOptionPane.showMessageDialog(null, "판매가 완료되었습니다", "알림", JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -167,7 +168,7 @@ public class FoodHelper {
 			pstmt.setInt(2, stock);
 			pstmt.setInt(3, price);
 			pstmt.executeUpdate();
-			FoodLogWriter.writeLog(no, "추가", "새로운 매뉴 "+stock+"개를 추가함");
+			FoodLogWriter.writeLog(name, "추가", "새로운 매뉴 "+stock+"개를 추가함");
 			JOptionPane.showMessageDialog(null, "추가가 완료되었습니다", "알림", JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -204,19 +205,16 @@ public class FoodHelper {
 			pstmt.executeUpdate();
 			
 			StringBuffer log = new StringBuffer();
-			log.append("이름 : ");
-			log.append(beforeName);
-			log.append("=>");
 			log.append(editName);
-			log.append(" 재고");
+			log.append(" 재고:");
 			log.append(beforeStock);
 			log.append("=>");
 			log.append(editStock);
-			log.append(" 가격");
+			log.append(" 가격:");
 			log.append(beforePrice);
 			log.append("=>");
 			log.append(editPrice);
-			FoodLogWriter.writeLog(no, "수정", log.toString());
+			FoodLogWriter.writeLog(beforeName, "수정", log.toString());
 			
 			JOptionPane.showMessageDialog(null, "수정이 완료되었습니다", "알림", JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e) {
@@ -239,6 +237,8 @@ public class FoodHelper {
 
 	public void delete(int no) {
 		conn = DBConnection.getConnection();
+		String fdName = FoodLogWriter.searchFdName(no);
+		System.out.println("delete : search한 fdName" + fdName);
 		sql = new StringBuffer();
 		sql.append("delete from food ");
 		sql.append("where fd_no=?");
@@ -248,7 +248,7 @@ public class FoodHelper {
 			pstmt = conn.prepareStatement(sql.toString());
 			pstmt.setInt(1, no);
 			pstmt.executeUpdate();
-			FoodLogWriter.writeLog(no, "삭제", "매뉴에서 삭제됨");
+			FoodLogWriter.writeLog(fdName, "삭제", "매뉴에서 삭제됨");
 			JOptionPane.showMessageDialog(null, "삭제가 완료되었습니다", "알림", JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -286,7 +286,7 @@ public class FoodHelper {
 			StringBuffer log = new StringBuffer();
 			log.append(quantity);
 			log.append("개가 입고됨");
-			FoodLogWriter.writeLog(no, "입고", log.toString());
+			FoodLogWriter.writeLog(name, "입고", log.toString());
 			
 			JOptionPane.showMessageDialog(null, "입고가 완료되었습니다", "알림", JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e) {

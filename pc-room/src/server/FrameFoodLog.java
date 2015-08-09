@@ -25,7 +25,7 @@ public class FrameFoodLog extends JFrame implements ActionListener {
 	// Log
 	JTable tableLog;
 	DefaultTableModel modelLog;
-	String[] colLogName = { "시간", "음식이름", "유형", "내용", "현재재고" };
+	String[] colLogName = { "시간", "음식이름", "유형", "내용"};
 	String[][] rowLogData;
 
 	JPanel plLogBackground;
