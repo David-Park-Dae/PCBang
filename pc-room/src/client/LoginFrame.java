@@ -3,6 +3,7 @@ package client;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,27 +21,28 @@ import util.SqlUtil;
 public class LoginFrame extends JFrame {
 //	static int LOGIN_DISPLAY_WIDTH = SetFrameDisplay.LOGIN_DISPLAY_WIDTH;
 //	static int LOGIN_DISPLAY_HEIGHT = SetFrameDisplay.LOGIN_DISPLAY_HEIGHT;
-	static int LOGIN_DISPLAY_WIDTH = 1600;
-	static int LOGIN_DISPLAY_HEIGHT = 900;
+	private static int 		 LOGIN_DISPLAY_WIDTH = 	1600;
+	private static int 		 LOGIN_DISPLAY_HEIGHT = 	900;
 	
-	String seatNumber;
+	private String 			 seatNumber;
 	
-	Member loginUser;
+	public Member 	 loginUser;
+	private ClientBackground clientBackground;
 	
-	LoginFrame 		inchent;
-	JPanel 			panelDefault;
-	JPanel 			panelNorth;
-	JPanel 			panelSouth;
-	JPanel 			panelInput;
+	private LoginFrame 		 inchent;
+	private JPanel 			 panelDefault;
+	private JPanel 			 panelNorth;
+	private JPanel 			 panelSouth;
+	private JPanel 			 panelInput;
 	
-	JLabel 			lbUsername;
-	JLabel 			lbPasswd;
-	JTextField 		tfUsername;
-	JPasswordField 	tfPasswd;
+	private JLabel 			 lbUsername;
+	private JLabel 			 lbPasswd;
+	private JTextField 		 tfUsername;
+	private JPasswordField 	 tfPasswd;
 	
-	JButton 		btnSignIn;
-	JButton 		btnSignUp;
-	JButton 		btnShutDown;
+	private JButton 		 btnSignIn;
+	private JButton 		 btnSignUp;
+	private JButton 		 btnShutDown;
 	
 	public LoginFrame(String seatNumber, String title) {
 		super(title);
@@ -48,13 +50,15 @@ public class LoginFrame extends JFrame {
 		
 		setLayout(null);
 		setSize(LOGIN_DISPLAY_WIDTH, LOGIN_DISPLAY_HEIGHT);
-		setUndecorated(true);	// 타이틀바 
+		setUndecorated(true);	// 타이틀바 제거
 		SetFrameDisplay.setFrameCenter(this);	// 화면 가운데 표시
+		
 		
 		initPanel();
 		
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		// 화면의 정보를 넘기기 위함
 		inchent = this;
+		
 		setVisible(true);
 	}
 	
@@ -108,6 +112,13 @@ public class LoginFrame extends JFrame {
 		tfPasswd = new JPasswordField();
 		tfPasswd.setSize(150,30);
 		tfPasswd.setLocation(xgab+lbPasswd.getWidth()+10, lbPasswd.getY());
+		tfPasswd.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				login();
+			}
+		});
 		
 		btnSignIn = new JButton("로그인");
 		btnSignIn.setSize(70,90);
@@ -116,12 +127,7 @@ public class LoginFrame extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String strId = tfUsername.getText();
-				String strPasswd = new String(tfPasswd.getPassword());
-				System.out.println(strId);
-				System.out.println(strPasswd);
-				// data base 검사
-				SqlUtil.login(inchent, strId, strPasswd);
+				login();
 			}
 		});
 		
@@ -154,4 +160,18 @@ public class LoginFrame extends JFrame {
 	public String getSeatNumber() {
 		return this.seatNumber;
 	}
+	
+	public void login() {
+		String strId = tfUsername.getText();
+		String strPasswd = new String(tfPasswd.getPassword());
+		
+		// data base 검사
+		try {
+			SqlUtil.login(inchent, strId, strPasswd);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }

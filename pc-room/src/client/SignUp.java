@@ -27,34 +27,59 @@ import util.SqlUtil;
 
 public class SignUp extends JFrame{
 
-	public final int XMARGIN = 20;
-	public final int YMARGIN = 30;
-	public final int XGAB = 20;
-	public final int YGAB = 15;
+	private final int 			XMARGIN = 	20;
+	private final int 			YMARGIN = 	30;
+	private final int 			XGAB = 		20;
+	private final int 			YGAB = 		15;
 
-	Connection conn;
+	public Connection 			conn;
 	
-	JPanel panelMain;
+	private JPanel 				panelMain;
 	
-	JLabel lbUsername;
-	JLabel lbName;
-	JLabel lbPasswd;
-	JLabel lbChkPasswd;
+	private JLabel 				lbUsername;
+	private JLabel 				lbName;
+	private JLabel 				lbPasswd;
+	private JLabel 				lbChkPasswd;
 	
-	JTextField tfUsername;
-	JTextField tfName;
-	JPasswordField tfPasswd;
-	JPasswordField tfChkPasswd;
+	private JTextField 			tfUsername;
+	private JTextField 			tfName;
+	private JPasswordField 		tfPasswd;
+	private JPasswordField 		tfChkPasswd;
 	
-	JButton btnSignUp;
-	JButton btnSignUpCancel;
+	private JButton 			btnSignUp;
+	private JButton 			btnSignUpCancel;
 	
-	boolean chkIdFlag = false;
-	boolean chkPasswdFlag = false;
+	private String 				strName;
+	private String 				strUsername;
+	private String 				strPasswd;
 	
-	String strName;
-	String strUsername;
-	String strPasswd;
+	private boolean 			chkIdFlag = 	false;
+	private boolean 			chkPasswdFlag = false;
+	
+	void signUpAction() {
+		strName = tfName.getText();
+		strUsername = tfUsername.getText();
+		strPasswd = new String(tfPasswd.getPassword());
+		
+		if(strName.equals("")) {
+			JOptionPane.showMessageDialog(panelMain, "이름을 확인해주세요.");
+			tfName.requestFocus();
+		} else if(!chkPasswdFlag) {	// 입력한 패스워드가 같지 않을 경우
+			JOptionPane.showMessageDialog(panelMain, "비밀번호를 확인해주세요.");
+			tfChkPasswd.requestFocus();
+		} else if (chkIdFlag) {
+			JOptionPane.showMessageDialog(panelMain, "아이디를 확인해주세요.");
+			tfUsername.requestFocus();
+		} else {
+			// DB처리
+			boolean flag = SqlUtil.signUp(strName, strUsername, strPasswd);
+			if(flag)
+				JOptionPane.showMessageDialog(panelMain, "회원가입이 완료되었습니다.");
+			else
+				JOptionPane.showMessageDialog(panelMain, "회원가입에 실패하였습니다.");
+			dispose();
+		}
+	}
 	
 	public SignUp(JFrame owner) {
 		this.setTitle("회원가입");
@@ -127,6 +152,14 @@ public class SignUp extends JFrame{
 			}
 		});
 		
+		// 엔터 입력시 회원가입
+		tfChkPasswd.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				signUpAction();
+			}
+		});
+		
 		
 		btnSignUp = new JButton("확인");
 		btnSignUp.setSize(70,40);
@@ -135,29 +168,7 @@ public class SignUp extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				strName = tfName.getText();
-				strUsername = tfUsername.getText();
-				strPasswd = new String(tfPasswd.getPassword());
-				
-				if(strName.equals("")) {
-					JOptionPane.showMessageDialog(panelMain, "이름을 확인해주세요.");
-					tfName.requestFocus();
-				} else if(!chkPasswdFlag) {	// 입력한 패스워드가 같지 않을 경우
-					JOptionPane.showMessageDialog(panelMain, "비밀번호를 확인해주세요.");
-					tfChkPasswd.requestFocus();
-				} else if (chkIdFlag) {
-					JOptionPane.showMessageDialog(panelMain, "아이디를 확인해주세요.");
-					tfUsername.requestFocus();
-				} else {
-					// DB처리
-					boolean flag = SqlUtil.signUp(strName, strUsername, strPasswd);
-					if(flag)
-						JOptionPane.showMessageDialog(panelMain, "회원가입이 완료되었습니다.");
-					else
-						JOptionPane.showMessageDialog(panelMain, "회원가입에 실패하였습니다.");
-					dispose();
-				}
-				
+				signUpAction();
 			}
 		});
 		
@@ -204,4 +215,5 @@ public class SignUp extends JFrame{
 		setResizable(false);
 		setVisible(true);
 	}
+	
 }

@@ -1,5 +1,6 @@
 package util;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,16 +14,16 @@ import client.Member;
 
 public class SqlUtil {
 	
-	public static Connection conn 		  = null;
-	public static ResultSet rs            =	null;
+	public static Connection conn = 		null;
+	public static ResultSet rs =			null;
 	public static PreparedStatement pstmt = null;
 	
-	public static boolean flag 			  = true;
+	public static boolean flag = 			true;
 	
 	private static Member loginUser;
 	
 	// 로그인 sql 처리
-	public static void login(LoginFrame lf, String inputId, String inputPasswd) {
+	public static void login(LoginFrame lf, String inputId, String inputPasswd) throws IOException {
 		conn = DBConnection.getConnection();
 		String sql = "SELECT mb_name, mb_pwd, mb_resttime FROM member WHERE mb_id=?";
 		try {
@@ -32,12 +33,15 @@ public class SqlUtil {
 			
 			// 회원이 등록되어 있을 경우에만 실행
 			if(rs.next() == true) {
+
 				int restTime = rs.getInt("mb_resttime");
-				String passwd = rs.getString("mb_pwd");
 				String name   = rs.getString("mb_name");
 				
+				String passwd = rs.getString("mb_pwd");				
+				String endcodeInputPasswd = Sha1.setSha1(inputPasswd);
+				
 				// 패스워드가 맞을 때
-				if(passwd.equals(inputPasswd))  {
+				if(passwd.equals(endcodeInputPasswd))  {
 					// 로그인한 유저의 정보를 담는다.
 					loginUser = new Member(lf.getSeatNumber(), inputId ,name, restTime);
 					
@@ -93,12 +97,13 @@ public class SqlUtil {
 	// 회원가입 처리
 	public static boolean signUp(String name, String username, String passwd) {
 		conn = DBConnection.getConnection();
+		String passwdSetSha1 = Sha1.setSha1(passwd);
 		String sql = "INSERT INTO member VALUES(member_no.nextval,?,?,?,0)";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, name);
 			pstmt.setString(2, username);
-			pstmt.setString(3, passwd);
+			pstmt.setString(3, passwdSetSha1);
 			rs = pstmt.executeQuery();
 			flag = true;
 			System.out.println("회원가입 sql 전송 완료");
@@ -113,23 +118,23 @@ public class SqlUtil {
 	} // 회원가입 끝
 	
 	// 유저정보 저장 처리
-		public static void restTimeSave(Member user) {
-			conn = DBConnection.getConnection();
-			String sql = "UPDATE member SET mb_resttime=? WHERE mb_id=?";
-			try {
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setLong(1,user.getRestTime());
-				pstmt.setString(2, user.getId());
-				rs = pstmt.executeQuery();
-				System.out.println("유저정보 저장 sql 전송 완료");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, "서버와 연결이 끊겼습니다.");
-				e.printStackTrace();
-				System.exit(0);
-			}
-			sqlExit();
-		} // 유저정보 저장 끝
+	public static void restTimeSave(Member user) {
+		conn = DBConnection.getConnection();
+		String sql = "UPDATE member SET mb_resttime=? WHERE mb_id=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1,user.getRestTime());
+			pstmt.setString(2, user.getId());
+			rs = pstmt.executeQuery();
+			System.out.println("유저정보 저장 sql 전송 완료");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "서버와 연결이 끊겼습니다.");
+			e.printStackTrace();
+			System.exit(0);
+		}
+		sqlExit();
+	} // 유저정보 저장 끝
 	
 	// 자원 정리
 	public static void sqlExit() {
