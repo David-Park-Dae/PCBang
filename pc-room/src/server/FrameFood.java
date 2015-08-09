@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
+import util.FoodHelper;
 import util.SetFrameDisplay;
 
 public class FrameFood extends JFrame implements ActionListener {

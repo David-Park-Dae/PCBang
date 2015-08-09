@@ -1,4 +1,4 @@
-package server;
+package util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,10 +8,6 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-
-import oracle.net.aso.q;
-import util.DBConnection;
-import util.FoodLogWriter;
 
 public class FoodHelper {
 	DefaultTableModel model;
@@ -73,6 +69,46 @@ public class FoodHelper {
 					pstmt.close();
 				if (conn != null)
 					conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	// 클라이언트에서 DB에 저장된 정보 불러오기
+	public void search() {
+		model.setNumRows(0);
+		conn = DBConnection.getConnection();
+
+		try {
+			pstmt = conn.prepareStatement("SELECT fd_no, fd_name, fd_price FROM food");
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				no = rs.getInt("fd_no");
+				name = rs.getString("fd_name");
+				price = rs.getInt("fd_price");
+				
+				// 가져온 정보 Object에 넣기
+				Object[] tableStatement = { no, name, price };
+
+				System.out.print("음식 DB 정보 : ");
+				for (Object i : tableStatement) {
+					System.out.print(i + "  ");
+				} System.out.println();
+				
+				// 테이블에 불러온 정보 추가
+				model.addRow(tableStatement);
+			}
+		} catch (SQLException e1) {
+			System.out.println("[ Client ] food search query 오류");
+		} finally {
+			try {
+				if (rs != null) 	rs.close();
+				if (pstmt != null) 	pstmt.close();
+				if (conn != null) 	conn.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

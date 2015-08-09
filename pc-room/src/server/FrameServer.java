@@ -561,6 +561,11 @@ public class FrameServer extends JFrame {
 						pw.flush();
 						takeMember((Member) messageObject);
 					}
+					if (objectIs.equals("FoodObject")) {
+						pw.println("food");
+						pw.flush();
+						// 만들어야함
+					}
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

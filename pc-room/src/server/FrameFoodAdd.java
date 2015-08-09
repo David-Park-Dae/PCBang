@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import util.DBConnection;
+import util.FoodHelper;
 import util.SetFrameDisplay;
 
 public class FrameFoodAdd extends JFrame implements ActionListener, KeyListener {

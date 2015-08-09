@@ -145,7 +145,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 음식주문 프레임 띄우기
-
+				new FrameFood(loginUser);
 			}
 		});
 
