@@ -1,6 +1,8 @@
 package client;
 
-public class FoodObject {
+import java.io.Serializable;
+
+public class FoodObject implements Serializable {
 	private String seatNumber;
 	private Object[][] foodInfo;
 
@@ -9,17 +11,14 @@ public class FoodObject {
 	}
 
 	public void setFoodInfo(Object[][] foodInfo) {
-		for(int i=0; i<foodInfo.length; i++) {
-			System.out.print("주문 할 음식 : ");
-			for(int j=0; j<foodInfo[i].length; j++) {
-				System.out.print(foodInfo[i][j]+" ");
-			}
-			System.out.println();
-		}
-		
 		this.foodInfo = foodInfo;
 	}
-	
-	
-	
+
+	public Object[][] getFoodInfo() {
+		return foodInfo;
+	}
+
+	public String getSeatNumber() {
+		return seatNumber;
+	}
 }

@@ -42,7 +42,6 @@ public class ObjectClient {
 			oos.flush(); // flush.. 사실 쓸필요 없을지도
 			signal = br.readLine();
 			if (signal.equals("member")) {
-				// 여기에 사용허가기능(로그인 허용같은 기능)
 				System.out.println("ObjectClient : 서버 member Signal 받기 성공");
 			}
 			if (signal.equals("food")) {

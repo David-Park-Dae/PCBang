@@ -191,6 +191,35 @@ public class FoodHelper {
 		}
 		search("");
 	}
+	
+	public static void sell(String fdName) {
+		conn = DBConnection.getConnection();
+		StringBuffer sql = new StringBuffer();
+		sql.append("update food ");
+		sql.append("set fd_stock=");
+		sql.append("(select fd_stock from food where fd_name=?)-1 ");
+		sql.append("where fd_name=? ");
+		try {
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setString(1, fdName);
+			pstmt.setString(2, fdName);
+			pstmt.executeUpdate();
+			FoodLogWriter.writeLog(fdName, "판매", "1 개를 판매");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public void add(String name, int stock, int price) {
 		conn = DBConnection.getConnection();

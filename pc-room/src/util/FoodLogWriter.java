@@ -73,7 +73,7 @@ public class FoodLogWriter {
 				String type = rs.getString("fl_type");
 				String log = rs.getString("fl_log");
 
-				String[] tableStatement = { date, name, type, log};
+				String[] tableStatement = { date, name, type, log };
 				model.addRow(tableStatement);
 			}
 		} catch (SQLException e) {
@@ -101,22 +101,25 @@ public class FoodLogWriter {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select fl_date, fl_name, fl_type, fl_log ");
 		sql.append("from foodlog ");
-		sql.append("where fl_type = ?");
+		System.out.println("FoodWriter>>검색할 타입 :" + insertedType);
 
 		try {
+			if (insertedType.equals("입고"))
+				sql.append("where fl_type = '입고'");
+			if (insertedType.equals("판매"))
+				sql.append("where fl_type = '판매'");
+			if (insertedType.equals("추가"))
+				sql.append("where fl_type = '추가'");
 			pstmt = conn.prepareStatement(sql.toString());
-			pstmt.setString(1, insertedType);
 			rs = pstmt.executeQuery();
-
 			while (rs.next()) {
 				// jtable의 model을 매개변수로 받고 출력하자
 				String date = rs.getString("fl_date");
 				String name = rs.getString("fl_name");
 				String type = rs.getString("fl_type");
 				String log = rs.getString("fl_log");
-				int stock = rs.getInt("fd_stock");
-
-				String[] tableStatement = { date, name, type, log, Integer.toString(stock) };
+				System.out.println("FoodWriter>>" + date + name + type + log);
+				String[] tableStatement = { date, name, type, log };
 				model.addRow(tableStatement);
 			}
 		} catch (SQLException e) {
@@ -196,7 +199,7 @@ public class FoodLogWriter {
 			rs = pstmt.executeQuery();
 			String fdName = null;
 			while (rs.next()) {
-				fdNo = rs.getInt("fd_no");
+				fdName = rs.getString("fd_name");
 			}
 			return fdName;
 		} catch (SQLException e) {

@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import util.FoodHelper;
+import util.ObjectClient;
 
 public class FrameFood extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -47,7 +48,7 @@ public class FrameFood extends JFrame {
 		initSouthPanel();
 
 		setVisible(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 	}
 	public FrameFood(Member loginUser) {
@@ -177,7 +178,7 @@ public class FrameFood extends JFrame {
 				FoodObject fo = new FoodObject(loginUser.getSeatNumber());
 				fo.setFoodInfo(foodInfo);
 				
-				// 넘겨주는 함수
+				ObjectClient.sendObject(fo);
 				
 				JOptionPane.showMessageDialog(null,"주문이 완료되었습니다.");
 				dispose();

@@ -37,6 +37,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import client.FoodObject;
 import client.Member;
 import util.MoneyConverter;
 import util.PLabel;
@@ -48,7 +49,7 @@ public class FrameServer extends JFrame {
 
 	public static int PC_TOTAL = 25; // 컴퓨터의 총 갯수
 	public static int PC_AVAILABLE = 0; // 현재 사용가능한 PC갯수
-	
+
 	private ServerBackground sb = ServerBackground.getInstance();
 	MemberHelper memberHelper;
 
@@ -64,7 +65,7 @@ public class FrameServer extends JFrame {
 	JMenuBar bar; // 매뉴바
 	JMenu menuBasic; // 기본설정매뉴
 	JMenu menuMember; // 회원관리매뉴
-	JMenu menuFood; // 음식관리매뉴
+	JMenu menuFood; // 음식관리매뉴r
 	JMenuItem itemBasicMoney; // 기본설정 아이템 요금제관리
 	JMenuItem itemBasicExit; // 기본설정 아이템 종료
 
@@ -129,8 +130,6 @@ public class FrameServer extends JFrame {
 				}
 			}
 		});
-		
-		
 
 		// 핸들러들 생성
 		MouseHandler mouseHandler = new MouseHandler();
@@ -169,7 +168,7 @@ public class FrameServer extends JFrame {
 		bar.add(menuBasic);
 		bar.add(menuMember);
 		bar.add(menuFood);
-		menuBasic.add(itemBasicMoney);
+//		menuBasic.add(itemBasicMoney);
 		menuBasic.add(itemBasicExit);
 
 		bar.addMouseListener(mouseHandler);
@@ -228,7 +227,7 @@ public class FrameServer extends JFrame {
 		jpm.add(popItemPay);
 		jpm.add(popItemCharge);
 		jpm.add(popItemChat);
-		
+
 		popItemChat.addActionListener(actionHandler);
 		popItemPay.addActionListener(actionHandler);
 		popItemCharge.addActionListener(actionHandler);
@@ -251,19 +250,19 @@ public class FrameServer extends JFrame {
 				num++;
 			}
 		}
-		
+
 		runChatServer();
-		
+
 		setVisible(true);
 	}
-	
+
 	private void runChatServer() {
 		ServerBackground serverBackground = ServerBackground.getInstance();
 		Thread th = new Thread(serverBackground);
 		th.start();
 	}
 
-	//팝업매뉴 충전하기를 누르면 뜨는 창, 돈을 입력하면 시간으로 환산하여 resttimer에 추가해준다.
+	// 팝업매뉴 충전하기를 누르면 뜨는 창, 돈을 입력하면 시간으로 환산하여 resttimer에 추가해준다.
 	class FrameCharge extends JFrame implements ActionListener {
 		JPanel plChargeLine1;
 		JPanel plChargeLine2;
@@ -320,32 +319,33 @@ public class FrameServer extends JFrame {
 			// TODO Auto-generated method stub
 			Object obj = new Object();
 			obj = e.getSource();
-			
-			//충전하기 버튼을 누르면
+
+			// 충전하기 버튼을 누르면
 			if (obj.equals(btnCharge)) {
-				
+
 				int intChargeMoney = Integer.parseInt(tfCharge.getText());
 				if (intChargeMoney > 0) {
 					String dialogMessage = (currentPcNumber + 1) + "번 PC를 충전하시겠습니까?";
-					
+
 					int result = JOptionPane.showConfirmDialog(null, dialogMessage, "알림", JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.YES_OPTION) {
 						System.out.println(currentPcNumber + 1 + "번 PC충전");
-						System.out.println("charge@"+tfCharge.getText());
-						sendMessageToClient("charge@"+tfCharge.getText());
+						System.out.println("charge@" + tfCharge.getText());
+						sendMessageToClient("charge@" + tfCharge.getText());
 						// 충전하라고 신호보냄
 						System.out.println("charger : returnSignal : " + returnSignal);
 						if (returnSignal.equals("executeCharge")) {
 							int chargeTime = MoneyConverter.basicConvert(intChargeMoney);
-							System.out.println("충전한시간 "+chargeTime);
-							resttimer[currentPcNumber].setResttime(resttimer[currentPcNumber].getResttime()+chargeTime);
+							System.out.println("충전한시간 " + chargeTime);
+							resttimer[currentPcNumber]
+									.setResttime(resttimer[currentPcNumber].getResttime() + chargeTime);
 							currentPcNumber = -1;
 							returnSignal = "";
 							JOptionPane.showMessageDialog(null, "충전이 완료되었습니다", "알림", JOptionPane.INFORMATION_MESSAGE);
 							this.dispose();
 						}
 					}
-				}else{
+				} else {
 					JOptionPane.showMessageDialog(null, "금액을 입력하여 주새요", "알림", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
@@ -444,13 +444,14 @@ public class FrameServer extends JFrame {
 					currentPcNumber = -1;
 				}
 			}
-			
+
 			// 채팅GUI 버튼
-			if(obj.equals(popItemChat)) {
+			if (obj.equals(popItemChat)) {
 				jpm.setVisible(false); // 팝업매뉴 꺼져라
 				if (imgLaptopR[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
-					String seatNumber = Integer.toString(currentPcNumber+1);
-					if(currentPcNumber < 10) seatNumber = "0"+seatNumber;
+					String seatNumber = Integer.toString(currentPcNumber + 1);
+					if (currentPcNumber < 10)
+						seatNumber = "0" + seatNumber;
 					sb.setServersGuiVisible(seatNumber, true);
 					currentPcNumber = -1;
 				} else if (imgLaptopS[currentPcNumber].equals(lbLaptop[currentPcNumber].getIcon())) {
@@ -564,7 +565,7 @@ public class FrameServer extends JFrame {
 					if (objectIs.equals("FoodObject")) {
 						pw.println("food");
 						pw.flush();
-						// 만들어야함
+						takeFoodObject((FoodObject) messageObject);
 					}
 
 				} catch (IOException e) {
@@ -621,23 +622,27 @@ public class FrameServer extends JFrame {
 				resttimer[arrSeatNum].start(lbLaptop[arrSeatNum]);
 			}
 		}
+
+		public void takeFoodObject(FoodObject food) {
+			new FrameFoodMessage(food);
+		}
 	}
 
-	//충전과 강제종료 신호를 보낸다.
+	// 충전과 강제종료 신호를 보낸다.
 	private void sendMessageToClient(String order) {
-		//order 는 shutdown@ 과 charge@충전금액 두종류
-		
+		// order 는 shutdown@ 과 charge@충전금액 두종류
+
 		System.out.println("order : " + order);
 		try {
-			socketToClient = new Socket("169.254.55.75", 6000); //클라이언트 서버에 연결
+			socketToClient = new Socket("169.254.55.75", 6000); // 클라이언트 서버에 연결
 			System.out.println(socketToClient);
 			pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketToClient.getOutputStream())));
 			br = new BufferedReader(new InputStreamReader(socketToClient.getInputStream()));
 			pw.println(order); // order를 전송
 			pw.flush();
 
-			returnSignal = br.readLine(); //전송 후 잘 받았는지 응답 메세지 받음
-			System.out.println("리턴신호 : " + returnSignal); 
+			returnSignal = br.readLine(); // 전송 후 잘 받았는지 응답 메세지 받음
+			System.out.println("리턴신호 : " + returnSignal);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
